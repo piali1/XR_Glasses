@@ -54,6 +54,31 @@
 
     </main>
 
+
+    <section class="batch-box">
+      <h3>Batch information</h3>
+      <p>
+        Add optional batch data for the digital process report.
+      </p>
+
+      <div class="batch-grid">
+        <label>
+          Batch ID
+          <input id="batchId" type="text" placeholder="e.g. OIN-2026-001" />
+        </label>
+
+        <label>
+          Operator
+          <input id="operatorName" type="text" placeholder="e.g. Pia" />
+        </label>
+
+        <label>
+          Workstation
+          <input id="workstation" type="text" placeholder="e.g. Pharmacy Lab 1" />
+        </label>
+      </div>
+    </section>
+
     <div class="selected-box" id="selectedBox">
       <h3>Selected Process</h3>
       <p id="selectedText">No process selected yet.</p>

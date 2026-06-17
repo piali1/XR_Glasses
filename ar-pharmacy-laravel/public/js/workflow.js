@@ -46,6 +46,13 @@ const materialVerifiedSteps = new Set();
 const urlParams = new URLSearchParams(window.location.search);
 const selectedProcess = urlParams.get("process") || "ointment";
 
+const batchInfo = {
+  batchId: urlParams.get("batchId") || "DEMO-BATCH",
+  operator: urlParams.get("operator") || "Demo Operator",
+  workstation: urlParams.get("workstation") || "Demo Workstation",
+  startedAt: new Date()
+};
+
 const processNames = {
   ointment: "Ointment Preparation",
   capsules: "Capsule Preparation",
@@ -250,6 +257,10 @@ function updateStep() {
   timerCompleted = step.timer === 0;
 
   processTitle.textContent = processNames[selectedProcess] || "Pharmacy Process";
+
+  document.getElementById("workflowBatchId").textContent = batchInfo.batchId;
+  document.getElementById("workflowOperator").textContent = batchInfo.operator;
+  document.getElementById("workflowWorkstation").textContent = batchInfo.workstation;
   stepCounter.textContent = `Step ${currentStep + 1} of ${steps.length}`;
   stepStatus.textContent = currentStep === steps.length - 1 ? "Final step" : "In progress";
   stepTitle.textContent = step.title;
@@ -522,6 +533,10 @@ function showCompletionSummary() {
   document.getElementById("completedProcessName").textContent =
     processNames[selectedProcess] || "Pharmacy Process";
 
+  document.getElementById("completedBatchId").textContent = batchInfo.batchId;
+  document.getElementById("completedOperator").textContent = batchInfo.operator;
+  document.getElementById("completedWorkstation").textContent = batchInfo.workstation;
+
   document.getElementById("completedStepCount").textContent =
     `${completedSteps.size} of ${steps.length}`;
 
@@ -548,6 +563,58 @@ function showCompletionSummary() {
   document.getElementById("completionOverlay").classList.remove("hidden");
 }
 
+
+function downloadProcessReport() {
+  const finishedAt = new Date();
+
+  const issueLines = reportedIssues.length === 0
+    ? "No issues reported"
+    : reportedIssues.map(issue =>
+        `Step ${issue.stepNumber}: ${issue.issue} at ${issue.time}`
+      ).join("\n");
+
+  const stepLines = processLog.length === 0
+    ? "No steps documented"
+    : processLog.map(entry =>
+        `Step ${entry.stepNumber}: ${entry.title} | ${entry.time}${entry.timerUsed ? " | timer used" : ""}${entry.materialVerified ? " | material verified" : ""}`
+      ).join("\n");
+
+  const report = `AR Pharmacy Process Report
+
+Process: ${processNames[selectedProcess] || "Pharmacy Process"}
+Batch ID: ${batchInfo.batchId}
+Operator: ${batchInfo.operator}
+Workstation: ${batchInfo.workstation}
+
+Started at: ${batchInfo.startedAt.toLocaleString()}
+Finished at: ${finishedAt.toLocaleString()}
+
+Summary:
+Completed steps: ${completedSteps.size} of ${steps.length}
+Material checks: ${materialVerifiedSteps.size}
+Timers used: ${timerUsedSteps.size}
+Reported issues: ${reportedIssues.length}
+
+Digital process documentation:
+${stepLines}
+
+Reported issues:
+${issueLines}
+`;
+
+  const blob = new Blob([report], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${batchInfo.batchId}-process-report.txt`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(url);
+}
+
 function restartProcess() {
   window.location.href = "/";
 }
@@ -560,6 +627,7 @@ window.startTimer = startTimer;
 window.nextStep = nextStep;
 window.previousStep = previousStep;
 window.restartProcess = restartProcess;
+window.downloadProcessReport = downloadProcessReport;
 
 startCamera();
 updateStep();

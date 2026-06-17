@@ -57,6 +57,13 @@
 
         <section class="step-card">
 
+
+          <div class="batch-meta-box">
+            <p><strong>Batch:</strong> <span id="workflowBatchId">DEMO-BATCH</span></p>
+            <p><strong>Operator:</strong> <span id="workflowOperator">Demo Operator</span></p>
+            <p><strong>Workstation:</strong> <span id="workflowWorkstation">Demo Workstation</span></p>
+          </div>
+
           <div class="step-meta">
             <span id="stepStatus">In progress</span>
             <span id="riskBadge" class="risk-badge">Risk: normal</span>
@@ -169,6 +176,9 @@
 
           <div class="completion-summary">
             <p><strong>Process:</strong> <span id="completedProcessName">Pharmacy Process</span></p>
+            <p><strong>Batch ID:</strong> <span id="completedBatchId">DEMO-BATCH</span></p>
+            <p><strong>Operator:</strong> <span id="completedOperator">Demo Operator</span></p>
+            <p><strong>Workstation:</strong> <span id="completedWorkstation">Demo Workstation</span></p>
             <p><strong>Completed steps:</strong> <span id="completedStepCount">0</span></p>
             <p><strong>Reported issues:</strong> <span id="completedIssueCount">0</span></p>
             <p><strong>Timers used:</strong> <span id="completedTimerCount">0</span></p>
@@ -181,6 +191,7 @@
             <ul id="completionLogList"></ul>
           </div>
 
+          <button onclick="downloadProcessReport()">Download process report</button>
           <button onclick="restartProcess()">Return to process selection</button>
         </section>
       </div>
