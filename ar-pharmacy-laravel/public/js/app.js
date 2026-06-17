@@ -30,7 +30,4 @@ function startProcess() {
   window.location.href = "/workflow?process=" + selectedProcess;
 
 
-  // Later we will connect this to the AR workflow page.
-  // Example:
-  // window.location.href = "workflow.html?process=" + selectedProcess;
 }
