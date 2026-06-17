@@ -7,6 +7,8 @@ const stepTitle = document.getElementById("stepTitle");
 const stepDescription = document.getElementById("stepDescription");
 const warningBox = document.getElementById("warningBox");
 const timerDisplay = document.getElementById("timerDisplay");
+const checkItems = document.querySelectorAll(".check-item");
+const nextButton = document.getElementById("nextButton");
 
 let currentStep = 0;
 let timerInterval = null;
@@ -148,6 +150,7 @@ function updateStep() {
   stepDescription.textContent = step.description;
   warningBox.textContent = "Warning: " + step.warning;
 
+  resetChecklist();
   resetTimer();
 
   if (step.timer > 0) {
@@ -160,6 +163,11 @@ function updateStep() {
 }
 
 function nextStep() {
+  if (!isChecklistComplete()) {
+    alert("Please confirm all checklist items before continuing.");
+    return;
+  }
+
   if (currentStep < steps.length - 1) {
     currentStep++;
     updateStep();
@@ -214,6 +222,26 @@ function updateTimerDisplay() {
     ":" +
     String(seconds).padStart(2, "0");
 }
+
+function isChecklistComplete() {
+  return Array.from(checkItems).every(item => item.checked);
+}
+
+function resetChecklist() {
+  checkItems.forEach(item => {
+    item.checked = false;
+  });
+
+  updateNextButtonState();
+}
+
+function updateNextButtonState() {
+  nextButton.disabled = !isChecklistComplete();
+}
+
+checkItems.forEach(item => {
+  item.addEventListener("change", updateNextButtonState);
+});
 
 startCamera();
 updateStep();

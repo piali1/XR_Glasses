@@ -46,17 +46,17 @@
           <h3>Checklist</h3>
 
           <label>
-            <input type="checkbox" />
+            <input type="checkbox" class="check-item" />
             Step understood
           </label>
 
           <label>
-            <input type="checkbox" />
+            <input type="checkbox" class="check-item" />
             Materials checked
           </label>
 
           <label>
-            <input type="checkbox" />
+            <input type="checkbox" class="check-item" />
             Safety confirmed
           </label>
         </div>
@@ -72,7 +72,7 @@
 
         <div class="navigation-buttons">
           <button onclick="previousStep()">Back</button>
-          <button onclick="nextStep()">Next Step</button>
+          <button id="nextButton" onclick="nextStep()" disabled>Next Step</button>
         </div>
 
       </main>
