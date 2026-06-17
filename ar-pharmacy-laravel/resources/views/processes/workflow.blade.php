@@ -98,8 +98,13 @@
             <ul id="materialList"></ul>
 
             <div class="material-actions">
-              <button onclick="scanMaterial()">Scan material</button>
+              <button onclick="scanMaterial()">Scan QR code</button>
               <button onclick="simulateWrongMaterial()">Simulate wrong material</button>
+            </div>
+
+            <div id="qrScannerBox" class="qr-scanner-box hidden">
+              <p id="qrScannerStatus">Point the QR code into the camera view.</p>
+              <button onclick="stopQrScanner()">Stop QR scan</button>
             </div>
 
             <div id="materialResult" class="material-result">

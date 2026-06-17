@@ -29,13 +29,18 @@ const logCount = document.getElementById("logCount");
 const materialList = document.getElementById("materialList");
 const materialStatus = document.getElementById("materialStatus");
 const materialResult = document.getElementById("materialResult");
+const qrScannerBox = document.getElementById("qrScannerBox");
+const qrScannerStatus = document.getElementById("qrScannerStatus");
 
 let currentStep = 0;
 let timerInterval = null;
 let remainingSeconds = 0;
 let timerCompleted = true;
 let materialVerified = false;
+let scannedMaterialCodes = new Set();
 let activeIssue = null;
+let qrScanInterval = null;
+let qrDetector = null;
 
 const completedSteps = new Set();
 const processLog = [];
@@ -253,8 +258,10 @@ function updateStep() {
   const step = steps[currentStep];
 
   materialVerified = false;
+  scannedMaterialCodes = new Set();
   activeIssue = null;
   timerCompleted = step.timer === 0;
+  stopQrScanner();
 
   processTitle.textContent = processNames[selectedProcess] || "Pharmacy Process";
 
@@ -284,19 +291,136 @@ function updateStep() {
 
 function renderMaterials(step) {
   materialList.innerHTML = "";
+  scannedMaterialCodes = new Set();
 
   step.materials.forEach(material => {
+    const code = toMaterialCode(material);
     const item = document.createElement("li");
-    item.textContent = material;
+
+    item.dataset.code = code;
+    item.className = "material-scan-item pending";
+    item.innerHTML = `
+      <span>${material}</span>
+      <small class="material-code">${code}</small>
+      <strong class="material-state">Pending</strong>
+    `;
+
     materialList.appendChild(item);
   });
 
-  materialStatus.textContent = "Not verified";
-  materialResult.textContent = "Material scan required before continuing.";
+  materialVerified = false;
+  materialStatus.textContent = `0/${step.materials.length} verified`;
+  materialResult.textContent = "Scan every required QR code before continuing.";
   materialResult.className = "material-result";
+
+  if (qrScannerBox) {
+    qrScannerBox.classList.add("hidden");
+  }
 }
 
-function scanMaterial() {
+async function scanMaterial() {
+  const missingCodes = getExpectedMaterialCodes().filter(code => !scannedMaterialCodes.has(code));
+
+  if (missingCodes.length === 0) {
+    processVerifiedMaterial();
+    return;
+  }
+
+  if (!("BarcodeDetector" in window)) {
+    const manualCode = prompt("QR scanner is not supported in this browser. Enter the material code manually:");
+    if (manualCode) {
+      validateMaterialCode(manualCode.trim());
+    }
+    return;
+  }
+
+  if (!cameraView || !cameraView.srcObject) {
+    const manualCode = prompt("Camera is not available. Enter the material code manually:");
+    if (manualCode) {
+      validateMaterialCode(manualCode.trim());
+    }
+    return;
+  }
+
+  qrDetector = new BarcodeDetector({ formats: ["qr_code"] });
+
+  qrScannerBox.classList.remove("hidden");
+  qrScannerStatus.textContent =
+    "Scanning QR code... Missing: " + missingCodes.join(", ");
+
+  if (qrScanInterval) {
+    clearInterval(qrScanInterval);
+  }
+
+  qrScanInterval = setInterval(async () => {
+    try {
+      const codes = await qrDetector.detect(cameraView);
+
+      if (codes.length > 0) {
+        const scannedCode = codes[0].rawValue.trim();
+        validateMaterialCode(scannedCode);
+      }
+    } catch (error) {
+      console.error(error);
+      qrScannerStatus.textContent = "QR scan failed. Try again or enter the code manually.";
+    }
+  }, 700);
+}
+
+function simulateWrongMaterial() {
+  processWrongMaterial("SIMULATED-WRONG-MATERIAL");
+}
+
+
+function stopQrScanner() {
+  if (qrScanInterval) {
+    clearInterval(qrScanInterval);
+    qrScanInterval = null;
+  }
+
+  if (qrScannerBox) {
+    qrScannerBox.classList.add("hidden");
+  }
+}
+
+function validateMaterialCode(scannedCode) {
+  const expectedCodes = getExpectedMaterialCodes();
+
+  stopQrScanner();
+
+  if (!expectedCodes.includes(scannedCode)) {
+    processWrongMaterial(scannedCode);
+    return;
+  }
+
+  if (scannedMaterialCodes.has(scannedCode)) {
+    materialResult.textContent =
+      "QR code already scanned: " + scannedCode + ". Please scan the next missing material.";
+    materialResult.className = "material-result";
+    updateMaterialScanDisplay();
+    updateNextButtonState();
+    return;
+  }
+
+  scannedMaterialCodes.add(scannedCode);
+  activeIssue = null;
+  issueAlert.classList.add("hidden");
+
+  updateMaterialScanDisplay();
+
+  if (scannedMaterialCodes.size === expectedCodes.length) {
+    processVerifiedMaterial();
+  } else {
+    materialVerified = false;
+    materialResult.textContent =
+      "QR code verified: " + scannedCode + ". Continue scanning the remaining materials.";
+    materialResult.className = "material-result success";
+  }
+
+  updateNextButtonState();
+}
+
+function processVerifiedMaterial() {
   const step = steps[currentStep];
 
   materialVerified = true;
@@ -304,33 +428,75 @@ function scanMaterial() {
   issueAlert.classList.add("hidden");
   materialVerifiedSteps.add(currentStep);
 
-  materialStatus.textContent = "Verified";
+  materialStatus.textContent = `${scannedMaterialCodes.size}/${step.materials.length} verified`;
   materialResult.textContent =
-    "Correct material detected for step " + (currentStep + 1) + ": " + step.title + ".";
+    "All required QR codes verified for step " + (currentStep + 1) + ": " + step.title + ".";
   materialResult.className = "material-result success";
 
+  updateMaterialScanDisplay();
   updateNextButtonState();
 }
 
-function simulateWrongMaterial() {
+function processWrongMaterial(scannedCode) {
+  stopQrScanner();
+
   materialVerified = false;
-  activeIssue = "Wrong material detected";
+  activeIssue = "Wrong QR material code";
 
   reportedIssues.push({
     stepNumber: currentStep + 1,
-    issue: "Wrong material detected",
+    issue: "Wrong QR material code: " + scannedCode,
     time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   });
 
   issueText.textContent =
-    "Wrong material detected in step " + (currentStep + 1) + ". Resolve the issue and scan the correct material before continuing.";
+    "Wrong QR material code detected: " + scannedCode + ". Resolve the issue and scan the correct materials before continuing.";
   issueAlert.classList.remove("hidden");
 
   materialStatus.textContent = "Failed";
-  materialResult.textContent = "Wrong material detected. Process blocked.";
+  materialResult.textContent =
+    "Wrong QR code detected: " + scannedCode + ". Process blocked.";
   materialResult.className = "material-result error";
 
+  updateMaterialScanDisplay();
   updateNextButtonState();
+}
+
+function getExpectedMaterialCodes() {
+  const step = steps[currentStep];
+  return step.materials.map(material => toMaterialCode(material));
+}
+
+function toMaterialCode(materialName) {
+  return "MAT-" + materialName
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function updateMaterialScanDisplay() {
+  const step = steps[currentStep];
+
+  document.querySelectorAll("#materialList li").forEach(item => {
+    const code = item.dataset.code;
+    const state = item.querySelector(".material-state");
+
+    if (scannedMaterialCodes.has(code)) {
+      item.classList.remove("pending");
+      item.classList.add("scanned");
+      if (state) {
+        state.textContent = "Scanned";
+      }
+    } else {
+      item.classList.remove("scanned");
+      item.classList.add("pending");
+      if (state) {
+        state.textContent = "Pending";
+      }
+    }
+  });
+
+  materialStatus.textContent = `${scannedMaterialCodes.size}/${step.materials.length} verified`;
 }
 
 function renderChecklist(step) {
@@ -620,6 +786,7 @@ function restartProcess() {
 }
 
 window.scanMaterial = scanMaterial;
+window.stopQrScanner = stopQrScanner;
 window.simulateWrongMaterial = simulateWrongMaterial;
 window.reportIssue = reportIssue;
 window.resolveIssue = resolveIssue;
