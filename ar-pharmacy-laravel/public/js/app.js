@@ -27,7 +27,8 @@ function startProcess() {
     return;
   }
 
-  alert("Starting AR workflow for: " + processNames[selectedProcess]);
+  window.location.href = "/workflow?process=" + selectedProcess;
+
 
   // Later we will connect this to the AR workflow page.
   // Example:
