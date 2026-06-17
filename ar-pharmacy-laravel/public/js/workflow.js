@@ -31,6 +31,7 @@ const materialStatus = document.getElementById("materialStatus");
 const materialResult = document.getElementById("materialResult");
 const qrScannerBox = document.getElementById("qrScannerBox");
 const qrScannerStatus = document.getElementById("qrScannerStatus");
+const qrFileInput = document.getElementById("qrFileInput");
 
 let currentStep = 0;
 let timerInterval = null;
@@ -39,6 +40,7 @@ let timerCompleted = true;
 let materialVerified = false;
 let scannedMaterialCodes = new Set();
 let activeIssue = null;
+let backendBatchId = null;
 let qrScanInterval = null;
 let qrDetector = null;
 
@@ -57,6 +59,98 @@ const batchInfo = {
   workstation: urlParams.get("workstation") || "Demo Workstation",
   startedAt: new Date()
 };
+
+
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
+
+async function backendPost(url, payload) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "X-CSRF-TOKEN": csrfToken
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error("Backend request failed: " + response.status);
+  }
+
+  return response.json();
+}
+
+async function createBackendBatch() {
+  try {
+    const batch = await backendPost("/api/batches", {
+      batch_id: batchInfo.batchId,
+      process: selectedProcess,
+      operator_name: batchInfo.operator,
+      workstation: batchInfo.workstation
+    });
+
+    backendBatchId = batch.id;
+    console.log("Backend batch created", batch);
+  } catch (error) {
+    console.error("Could not create backend batch", error);
+  }
+}
+
+async function validateMaterialWithBackend(scannedCode) {
+  try {
+    return await backendPost("/api/materials/validate", {
+      batch_id: backendBatchId,
+      process: selectedProcess,
+      step_number: currentStep + 1,
+      code: scannedCode
+    });
+  } catch (error) {
+    console.error("Backend material validation failed", error);
+    return {
+      valid: getExpectedMaterialCodes().includes(scannedCode),
+      fallback: true
+    };
+  }
+}
+
+async function saveProcessLogToBackend(entry) {
+  try {
+    await backendPost("/api/process-logs", {
+      batch_id: backendBatchId,
+      step_number: entry.stepNumber,
+      step_title: entry.title,
+      timer_used: entry.timerUsed,
+      materials_verified: entry.materialVerified
+    });
+  } catch (error) {
+    console.error("Could not save process log", error);
+  }
+}
+
+async function saveIssueToBackend(stepNumber, issue) {
+  try {
+    await backendPost("/api/issues", {
+      batch_id: backendBatchId,
+      step_number: stepNumber,
+      issue: issue
+    });
+  } catch (error) {
+    console.error("Could not save issue", error);
+  }
+}
+
+async function completeBackendBatch() {
+  if (!backendBatchId) {
+    return;
+  }
+
+  try {
+    await backendPost(`/api/batches/${backendBatchId}/complete`, {});
+  } catch (error) {
+    console.error("Could not complete backend batch", error);
+  }
+}
 
 const processNames = {
   ointment: "Ointment Preparation",
@@ -383,10 +477,17 @@ function stopQrScanner() {
   }
 }
 
-function validateMaterialCode(scannedCode) {
+async function validateMaterialCode(scannedCode) {
   const expectedCodes = getExpectedMaterialCodes();
 
   stopQrScanner();
+
+  const backendValidation = await validateMaterialWithBackend(scannedCode);
+
+  if (!backendValidation.valid) {
+    processWrongMaterial(scannedCode);
+    return;
+  }
 
   if (!expectedCodes.includes(scannedCode)) {
     processWrongMaterial(scannedCode);
@@ -413,7 +514,7 @@ function validateMaterialCode(scannedCode) {
   } else {
     materialVerified = false;
     materialResult.textContent =
-      "QR code verified: " + scannedCode + ". Continue scanning the remaining materials.";
+      "QR code verified by backend: " + scannedCode + ". Continue scanning the remaining materials.";
     materialResult.className = "material-result success";
   }
 
@@ -448,6 +549,8 @@ function processWrongMaterial(scannedCode) {
     issue: "Wrong QR material code: " + scannedCode,
     time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   });
+
+  saveIssueToBackend(currentStep + 1, "Wrong QR material code: " + scannedCode);
 
   issueText.textContent =
     "Wrong QR material code detected: " + scannedCode + ". Resolve the issue and scan the correct materials before continuing.";
@@ -497,6 +600,68 @@ function updateMaterialScanDisplay() {
   });
 
   materialStatus.textContent = `${scannedMaterialCodes.size}/${step.materials.length} verified`;
+}
+
+
+function openQrFileUpload() {
+  if (!qrFileInput) {
+    alert("QR file upload is not available.");
+    return;
+  }
+
+  qrFileInput.value = "";
+  qrFileInput.click();
+}
+
+async function scanQrFromFile(input) {
+  const file = input.files && input.files[0];
+
+  if (!file) {
+    return;
+  }
+
+  if (!("BarcodeDetector" in window)) {
+    const manualCode = prompt("QR image scanning is not supported in this browser. Enter the material code manually:");
+    if (manualCode) {
+      await validateMaterialCode(manualCode.trim());
+    }
+    return;
+  }
+
+  const imageUrl = URL.createObjectURL(file);
+  const image = new Image();
+
+  image.onload = async () => {
+    try {
+      const detector = new BarcodeDetector({ formats: ["qr_code"] });
+      const codes = await detector.detect(image);
+
+      if (codes.length === 0) {
+        materialResult.textContent = "No QR code found in uploaded image. Please upload a clear QR code image.";
+        materialResult.className = "material-result error";
+        return;
+      }
+
+      const scannedCode = codes[0].rawValue.trim();
+      await validateMaterialCode(scannedCode);
+    } catch (error) {
+      console.error(error);
+      materialResult.textContent = "Could not scan QR code from uploaded image.";
+      materialResult.className = "material-result error";
+    } finally {
+      URL.revokeObjectURL(imageUrl);
+      input.value = "";
+    }
+  };
+
+  image.onerror = () => {
+    URL.revokeObjectURL(imageUrl);
+    input.value = "";
+    materialResult.textContent = "Could not load uploaded QR image.";
+    materialResult.className = "material-result error";
+  };
+
+  image.src = imageUrl;
 }
 
 function renderChecklist(step) {
@@ -625,6 +790,8 @@ function reportIssue(issueType) {
     time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   });
 
+  saveIssueToBackend(currentStep + 1, issueType);
+
   issueText.textContent = `${issueType} reported. Resolve the issue before continuing.`;
   issueAlert.classList.remove("hidden");
 
@@ -669,13 +836,16 @@ function completeCurrentStep() {
 
   completedSteps.add(currentStep);
 
-  processLog.push({
+  const logEntry = {
     stepNumber: currentStep + 1,
     title: step.title,
     time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     timerUsed: timerUsedSteps.has(currentStep),
     materialVerified: materialVerifiedSteps.has(currentStep)
-  });
+  };
+
+  processLog.push(logEntry);
+  saveProcessLogToBackend(logEntry);
 
   renderProcessLog();
 }
@@ -725,6 +895,8 @@ function showCompletionSummary() {
       <span>${entry.time}${entry.timerUsed ? " · timer used" : ""}${entry.materialVerified ? " · material verified" : ""}</span>
     </li>
   `).join("");
+
+  completeBackendBatch();
 
   document.getElementById("completionOverlay").classList.remove("hidden");
 }
@@ -786,6 +958,8 @@ function restartProcess() {
 }
 
 window.scanMaterial = scanMaterial;
+window.openQrFileUpload = openQrFileUpload;
+window.scanQrFromFile = scanQrFromFile;
 window.stopQrScanner = stopQrScanner;
 window.simulateWrongMaterial = simulateWrongMaterial;
 window.reportIssue = reportIssue;
@@ -797,4 +971,5 @@ window.restartProcess = restartProcess;
 window.downloadProcessReport = downloadProcessReport;
 
 startCamera();
+createBackendBatch();
 updateStep();

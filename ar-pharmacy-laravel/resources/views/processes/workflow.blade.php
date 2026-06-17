@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -99,6 +100,8 @@
 
             <div class="material-actions">
               <button onclick="scanMaterial()">Scan QR code</button>
+              <button onclick="openQrFileUpload()">Upload QR image</button>
+              <input id="qrFileInput" class="hidden" type="file" accept="image/*" onchange="scanQrFromFile(this)" />
               <button onclick="simulateWrongMaterial()">Simulate wrong material</button>
             </div>
 
