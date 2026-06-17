@@ -77,6 +77,29 @@
             Warning information will be displayed here.
           </div>
 
+
+          <div class="material-box">
+            <div class="section-title-row">
+              <h3>Material verification</h3>
+              <span id="materialStatus">Not verified</span>
+            </div>
+
+            <p class="material-intro">
+              Required materials for this step:
+            </p>
+
+            <ul id="materialList"></ul>
+
+            <div class="material-actions">
+              <button onclick="scanMaterial()">Scan material</button>
+              <button onclick="simulateWrongMaterial()">Simulate wrong material</button>
+            </div>
+
+            <div id="materialResult" class="material-result">
+              Material scan required before continuing.
+            </div>
+          </div>
+
           <div class="checklist-box">
             <div class="section-title-row">
               <h3>Smart checklist</h3>
@@ -149,6 +172,7 @@
             <p><strong>Completed steps:</strong> <span id="completedStepCount">0</span></p>
             <p><strong>Reported issues:</strong> <span id="completedIssueCount">0</span></p>
             <p><strong>Timers used:</strong> <span id="completedTimerCount">0</span></p>
+            <p><strong>Material checks:</strong> <span id="completedMaterialCount">0</span></p>
             <p><strong>Status:</strong> Validated and finished</p>
           </div>
 

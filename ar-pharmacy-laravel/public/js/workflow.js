@@ -1,3 +1,5 @@
+console.log("workflow.js loaded");
+
 const cameraView = document.getElementById("cameraView");
 const cameraFallback = document.getElementById("cameraFallback");
 const fallbackMessage = document.getElementById("fallbackMessage");
@@ -24,17 +26,22 @@ const issueText = document.getElementById("issueText");
 const requirementNote = document.getElementById("requirementNote");
 const processLogList = document.getElementById("processLog");
 const logCount = document.getElementById("logCount");
+const materialList = document.getElementById("materialList");
+const materialStatus = document.getElementById("materialStatus");
+const materialResult = document.getElementById("materialResult");
 
 let currentStep = 0;
 let timerInterval = null;
 let remainingSeconds = 0;
 let timerCompleted = true;
+let materialVerified = false;
 let activeIssue = null;
 
 const completedSteps = new Set();
 const processLog = [];
 const reportedIssues = [];
 const timerUsedSteps = new Set();
+const materialVerifiedSteps = new Set();
 
 const urlParams = new URLSearchParams(window.location.search);
 const selectedProcess = urlParams.get("process") || "ointment";
@@ -54,11 +61,8 @@ const processSteps = {
       arHint: "Highlight the material tray and check whether all required items are present.",
       risk: "medium",
       timer: 0,
-      checklist: [
-        "Prescription checked",
-        "Workspace cleaned",
-        "All materials available"
-      ]
+      materials: ["Prescription document", "Clean workspace", "Preparation tray"],
+      checklist: ["Prescription checked", "Workspace cleaned", "All materials available"]
     },
     {
       title: "Weigh ingredients",
@@ -67,11 +71,8 @@ const processSteps = {
       arHint: "Focus on the scale and confirm the displayed weight before continuing.",
       risk: "high",
       timer: 0,
-      checklist: [
-        "Scale calibrated",
-        "Correct ingredient selected",
-        "Weight value documented"
-      ]
+      materials: ["Digital scale", "Active ingredient", "Weighing paper"],
+      checklist: ["Scale calibrated", "Correct ingredient selected", "Weight value documented"]
     },
     {
       title: "Mix base substance",
@@ -80,11 +81,8 @@ const processSteps = {
       arHint: "The overlay would guide the stirring area and show the required mixing direction.",
       risk: "medium",
       timer: 30,
-      checklist: [
-        "Base substance prepared",
-        "Mixing tool selected",
-        "Consistency visually checked"
-      ]
+      materials: ["Ointment base", "Mixing bowl", "Spatula"],
+      checklist: ["Base substance prepared", "Mixing tool selected", "Consistency visually checked"]
     },
     {
       title: "Add active ingredient",
@@ -93,11 +91,8 @@ const processSteps = {
       arHint: "The assistant would highlight the active ingredient and the mixing area.",
       risk: "high",
       timer: 45,
-      checklist: [
-        "Active ingredient verified",
-        "Ingredient added gradually",
-        "Distribution checked"
-      ]
+      materials: ["Verified active ingredient", "Prepared base", "Mixing tool"],
+      checklist: ["Active ingredient verified", "Ingredient added gradually", "Distribution checked"]
     },
     {
       title: "Fill and label",
@@ -106,11 +101,8 @@ const processSteps = {
       arHint: "The overlay would highlight the final container and label position.",
       risk: "medium",
       timer: 0,
-      checklist: [
-        "Correct container selected",
-        "Label applied",
-        "Expiry date and storage checked"
-      ]
+      materials: ["Final container", "Printed label", "Storage instruction"],
+      checklist: ["Correct container selected", "Label applied", "Expiry date and storage checked"]
     }
   ],
 
@@ -122,11 +114,8 @@ const processSteps = {
       arHint: "The prescription area would be highlighted for visual verification.",
       risk: "high",
       timer: 0,
-      checklist: [
-        "Dosage checked",
-        "Capsule count confirmed",
-        "Patient instruction reviewed"
-      ]
+      materials: ["Prescription document", "Dosage instruction", "Capsule record"],
+      checklist: ["Dosage checked", "Capsule count confirmed", "Patient instruction reviewed"]
     },
     {
       title: "Prepare capsule shells",
@@ -135,11 +124,8 @@ const processSteps = {
       arHint: "The assistant would mark the capsule plate positions.",
       risk: "medium",
       timer: 0,
-      checklist: [
-        "Correct capsule size selected",
-        "Capsule plate prepared",
-        "Empty shells inspected"
-      ]
+      materials: ["Capsule shells", "Capsule plate", "Filling tool"],
+      checklist: ["Correct capsule size selected", "Capsule plate prepared", "Empty shells inspected"]
     },
     {
       title: "Fill capsules",
@@ -148,11 +134,8 @@ const processSteps = {
       arHint: "The overlay would show the filling direction and target area.",
       risk: "high",
       timer: 60,
-      checklist: [
-        "Powder prepared",
-        "Filling surface even",
-        "No visible material loss"
-      ]
+      materials: ["Powder mixture", "Filling card", "Capsule plate"],
+      checklist: ["Powder prepared", "Filling surface even", "No visible material loss"]
     },
     {
       title: "Close capsules",
@@ -161,11 +144,8 @@ const processSteps = {
       arHint: "The assistant would highlight capsules that need visual inspection.",
       risk: "medium",
       timer: 0,
-      checklist: [
-        "Capsules closed",
-        "Damaged capsules removed",
-        "Count verified"
-      ]
+      materials: ["Filled capsules", "Capsule top shells", "Inspection tray"],
+      checklist: ["Capsules closed", "Damaged capsules removed", "Count verified"]
     },
     {
       title: "Final control",
@@ -174,11 +154,8 @@ const processSteps = {
       arHint: "The final inspection area would be highlighted.",
       risk: "medium",
       timer: 0,
-      checklist: [
-        "Final count checked",
-        "Container labelled",
-        "Quality control completed"
-      ]
+      materials: ["Finished capsules", "Final container", "Quality checklist"],
+      checklist: ["Final count checked", "Container labelled", "Quality control completed"]
     }
   ],
 
@@ -190,11 +167,8 @@ const processSteps = {
       arHint: "The assistant would highlight solvent and container selection.",
       risk: "medium",
       timer: 0,
-      checklist: [
-        "Solvent checked",
-        "Container prepared",
-        "Required tools available"
-      ]
+      materials: ["Solvent checked", "Container prepared", "Required tools available"],
+      checklist: ["Solvent checked", "Container prepared", "Required tools available"]
     },
     {
       title: "Measure liquid",
@@ -203,11 +177,8 @@ const processSteps = {
       arHint: "The overlay would focus on the measuring cylinder scale.",
       risk: "high",
       timer: 0,
-      checklist: [
-        "Correct unit checked",
-        "Liquid level confirmed",
-        "Measurement documented"
-      ]
+      materials: ["Measuring cylinder", "Solvent", "Solution container"],
+      checklist: ["Correct unit checked", "Liquid level confirmed", "Measurement documented"]
     },
     {
       title: "Dissolve ingredient",
@@ -216,11 +187,8 @@ const processSteps = {
       arHint: "The assistant would highlight the stirring area and remaining particles.",
       risk: "high",
       timer: 60,
-      checklist: [
-        "Ingredient added",
-        "Solution stirred",
-        "No particles visible"
-      ]
+      materials: ["Measured solvent", "Ingredient powder", "Stirring rod"],
+      checklist: ["Ingredient added", "Solution stirred", "No particles visible"]
     },
     {
       title: "Waiting time",
@@ -229,11 +197,8 @@ const processSteps = {
       arHint: "The countdown would stay visible in the AR overlay.",
       risk: "medium",
       timer: 30,
-      checklist: [
-        "Container closed",
-        "Waiting time started",
-        "Solution rested"
-      ]
+      materials: ["Closed container", "Timer", "Resting area"],
+      checklist: ["Container closed", "Waiting time started", "Solution rested"]
     },
     {
       title: "Fill and label",
@@ -242,11 +207,8 @@ const processSteps = {
       arHint: "The final bottle and label area would be highlighted.",
       risk: "medium",
       timer: 0,
-      checklist: [
-        "Correct bottle selected",
-        "Label applied",
-        "Storage instructions checked"
-      ]
+      materials: ["Correct bottle selected", "Label applied", "Storage instructions"],
+      checklist: ["Correct bottle selected", "Label applied", "Storage instructions checked"]
     }
   ]
 };
@@ -283,6 +245,10 @@ function activateCameraFallback(message) {
 function updateStep() {
   const step = steps[currentStep];
 
+  materialVerified = false;
+  activeIssue = null;
+  timerCompleted = step.timer === 0;
+
   processTitle.textContent = processNames[selectedProcess] || "Pharmacy Process";
   stepCounter.textContent = `Step ${currentStep + 1} of ${steps.length}`;
   stepStatus.textContent = currentStep === steps.length - 1 ? "Final step" : "In progress";
@@ -296,13 +262,64 @@ function updateStep() {
   progressFill.style.width = progress + "%";
   progressPercent.textContent = progress + "%";
 
-  activeIssue = null;
   issueAlert.classList.add("hidden");
 
-  resetTimerForStep(step);
+  renderMaterials(step);
   renderChecklist(step);
-  updateNextButtonState();
+  resetTimerForStep(step);
   renderProcessLog();
+  updateNextButtonState();
+}
+
+function renderMaterials(step) {
+  materialList.innerHTML = "";
+
+  step.materials.forEach(material => {
+    const item = document.createElement("li");
+    item.textContent = material;
+    materialList.appendChild(item);
+  });
+
+  materialStatus.textContent = "Not verified";
+  materialResult.textContent = "Material scan required before continuing.";
+  materialResult.className = "material-result";
+}
+
+function scanMaterial() {
+  const step = steps[currentStep];
+
+  materialVerified = true;
+  activeIssue = null;
+  issueAlert.classList.add("hidden");
+  materialVerifiedSteps.add(currentStep);
+
+  materialStatus.textContent = "Verified";
+  materialResult.textContent =
+    "Correct material detected for step " + (currentStep + 1) + ": " + step.title + ".";
+  materialResult.className = "material-result success";
+
+  updateNextButtonState();
+}
+
+function simulateWrongMaterial() {
+  materialVerified = false;
+  activeIssue = "Wrong material detected";
+
+  reportedIssues.push({
+    stepNumber: currentStep + 1,
+    issue: "Wrong material detected",
+    time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  });
+
+  issueText.textContent =
+    "Wrong material detected in step " + (currentStep + 1) + ". Resolve the issue and scan the correct material before continuing.";
+  issueAlert.classList.remove("hidden");
+
+  materialStatus.textContent = "Failed";
+  materialResult.textContent = "Wrong material detected. Process blocked.";
+  materialResult.className = "material-result error";
+
+  updateNextButtonState();
 }
 
 function renderChecklist(step) {
@@ -334,18 +351,17 @@ function resetTimerForStep(step) {
   resetTimer();
 
   remainingSeconds = step.timer;
-  timerCompleted = step.timer === 0;
 
   if (step.timer > 0) {
     timerRequirement.textContent = "Timer required before continuing";
     timerButton.disabled = false;
     timerButton.textContent = "Start Timer";
-    updateTimerDisplay();
+    timerDisplay.textContent = formatTime(step.timer);
   } else {
     timerRequirement.textContent = "No timer required";
-    timerDisplay.textContent = "00:00";
     timerButton.disabled = true;
     timerButton.textContent = "No Timer";
+    timerDisplay.textContent = "00:00";
   }
 }
 
@@ -367,7 +383,7 @@ function startTimer() {
 
   timerInterval = setInterval(() => {
     remainingSeconds--;
-    updateTimerDisplay();
+    timerDisplay.textContent = formatTime(remainingSeconds);
 
     if (remainingSeconds <= 0) {
       resetTimer();
@@ -386,14 +402,11 @@ function resetTimer() {
   }
 }
 
-function updateTimerDisplay() {
-  const minutes = Math.floor(remainingSeconds / 60);
-  const seconds = remainingSeconds % 60;
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
 
-  timerDisplay.textContent =
-    String(minutes).padStart(2, "0") +
-    ":" +
-    String(seconds).padStart(2, "0");
+  return String(minutes).padStart(2, "0") + ":" + String(rest).padStart(2, "0");
 }
 
 function isChecklistComplete() {
@@ -402,17 +415,21 @@ function isChecklistComplete() {
 }
 
 function isStepReady() {
-  return isChecklistComplete() && timerCompleted && !activeIssue;
+  return isChecklistComplete() && timerCompleted && materialVerified && !activeIssue;
 }
 
 function updateNextButtonState() {
   updateChecklistCount();
 
-  nextButton.disabled = !isStepReady();
+  const ready = isStepReady();
+
+  nextButton.disabled = !ready;
   nextButton.textContent = currentStep === steps.length - 1 ? "Finish Workflow" : "Next Step";
 
   if (activeIssue) {
     requirementNote.textContent = "Resolve the reported issue before continuing.";
+  } else if (!materialVerified) {
+    requirementNote.textContent = "Scan and verify the required material before continuing.";
   } else if (!timerCompleted) {
     requirementNote.textContent = "Complete the required timer before continuing.";
   } else if (!isChecklistComplete()) {
@@ -420,6 +437,27 @@ function updateNextButtonState() {
   } else {
     requirementNote.textContent = "All requirements completed. You can continue.";
   }
+}
+
+function reportIssue(issueType) {
+  activeIssue = issueType;
+
+  reportedIssues.push({
+    stepNumber: currentStep + 1,
+    issue: issueType,
+    time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  });
+
+  issueText.textContent = `${issueType} reported. Resolve the issue before continuing.`;
+  issueAlert.classList.remove("hidden");
+
+  updateNextButtonState();
+}
+
+function resolveIssue() {
+  activeIssue = null;
+  issueAlert.classList.add("hidden");
+  updateNextButtonState();
 }
 
 function nextStep() {
@@ -451,13 +489,15 @@ function completeCurrentStep() {
   }
 
   const step = steps[currentStep];
+
   completedSteps.add(currentStep);
 
   processLog.push({
     stepNumber: currentStep + 1,
     title: step.title,
     time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    timerUsed: timerUsedSteps.has(currentStep)
+    timerUsed: timerUsedSteps.has(currentStep),
+    materialVerified: materialVerifiedSteps.has(currentStep)
   });
 
   renderProcessLog();
@@ -470,32 +510,12 @@ function renderProcessLog() {
     processLogList.innerHTML = processLog.map(entry => `
       <li>
         <strong>Step ${entry.stepNumber}: ${entry.title}</strong>
-        <span>${entry.time}${entry.timerUsed ? " · timer used" : ""}</span>
+        <span>${entry.time}${entry.timerUsed ? " · timer used" : ""}${entry.materialVerified ? " · material verified" : ""}</span>
       </li>
     `).join("");
   }
 
   logCount.textContent = `${processLog.length} entries`;
-}
-
-function reportIssue(issueType) {
-  activeIssue = issueType;
-
-  reportedIssues.push({
-    stepNumber: currentStep + 1,
-    issue: issueType,
-    time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-  });
-
-  issueText.textContent = `${issueType} reported in step ${currentStep + 1}. Resolve the issue before continuing.`;
-  issueAlert.classList.remove("hidden");
-  updateNextButtonState();
-}
-
-function resolveIssue() {
-  activeIssue = null;
-  issueAlert.classList.add("hidden");
-  updateNextButtonState();
 }
 
 function showCompletionSummary() {
@@ -511,12 +531,17 @@ function showCompletionSummary() {
   document.getElementById("completedTimerCount").textContent =
     timerUsedSteps.size;
 
+  const materialCount = document.getElementById("completedMaterialCount");
+  if (materialCount) {
+    materialCount.textContent = materialVerifiedSteps.size;
+  }
+
   const completionLogList = document.getElementById("completionLogList");
 
   completionLogList.innerHTML = processLog.map(entry => `
     <li>
       Step ${entry.stepNumber}: ${entry.title}
-      <span>${entry.time}${entry.timerUsed ? " · timer used" : ""}</span>
+      <span>${entry.time}${entry.timerUsed ? " · timer used" : ""}${entry.materialVerified ? " · material verified" : ""}</span>
     </li>
   `).join("");
 
@@ -526,6 +551,15 @@ function showCompletionSummary() {
 function restartProcess() {
   window.location.href = "/";
 }
+
+window.scanMaterial = scanMaterial;
+window.simulateWrongMaterial = simulateWrongMaterial;
+window.reportIssue = reportIssue;
+window.resolveIssue = resolveIssue;
+window.startTimer = startTimer;
+window.nextStep = nextStep;
+window.previousStep = previousStep;
+window.restartProcess = restartProcess;
 
 startCamera();
 updateStep();

@@ -478,3 +478,67 @@ button:disabled {
     align-items: stretch;
   }
 }
+
+
+.material-box {
+  margin-bottom: 18px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+}
+
+.material-intro {
+  color: #d1fae5;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+#materialList {
+  list-style: none;
+  margin-bottom: 12px;
+}
+
+#materialList li {
+  padding: 9px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: 7px;
+  color: #ecfdf5;
+}
+
+.material-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.material-actions button:first-child {
+  background: #059669;
+  color: white;
+}
+
+.material-actions button:last-child {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fee2e2;
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+.material-result {
+  padding: 11px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #d1d5db;
+  font-size: 14px;
+}
+
+.material-result.success {
+  background: rgba(16, 185, 129, 0.18);
+  color: #bbf7d0;
+}
+
+.material-result.error {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fecaca;
+}
