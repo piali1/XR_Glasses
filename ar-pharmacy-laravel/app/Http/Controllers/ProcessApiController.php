@@ -7,15 +7,70 @@ use App\Models\Material;
 use App\Models\MaterialScan;
 use App\Models\ProcessIssue;
 use App\Models\ProcessLog;
+use App\Models\RecipeTemplate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ProcessApiController extends Controller
 {
+    public function recipeTemplates(Request $request): JsonResponse
+    {
+        $query = RecipeTemplate::query()
+            ->with(['steps']);
+
+        if ($request->filled('process')) {
+            $query->where('process', $request->string('process'));
+        }
+
+        $templates = $query->orderBy('id')->get();
+
+        return response()->json($templates);
+    }
+
+    public function recipeTemplate(RecipeTemplate $template): JsonResponse
+    {
+        $template->load([
+            'steps',
+            'materials' => fn ($query) => $query->orderBy('step_number')->orderBy('id'),
+        ]);
+
+        $materialsByStep = $template->materials->groupBy('step_number');
+
+        $steps = $template->steps->map(function ($step) use ($materialsByStep) {
+            return [
+                'step_number' => $step->step_number,
+                'title' => $step->title,
+                'description' => $step->description,
+                'warning' => $step->warning,
+                'ar_hint' => $step->ar_hint,
+                'risk' => $step->risk,
+                'timer_seconds' => $step->timer_seconds,
+                'checklist_items' => $step->checklist_items ?? [],
+                'materials' => ($materialsByStep[$step->step_number] ?? collect())->values()->map(fn ($material) => [
+                    'name' => $material->name,
+                    'code' => $material->code,
+                ]),
+            ];
+        });
+
+        return response()->json([
+            'id' => $template->id,
+            'process' => $template->process,
+            'title' => $template->title,
+            'reference_source' => $template->reference_source,
+            'reference_code' => $template->reference_code,
+            'dosage_form' => $template->dosage_form,
+            'source_note' => $template->source_note,
+            'is_demo' => $template->is_demo,
+            'steps' => $steps,
+        ]);
+    }
+
     public function createBatch(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'batch_id' => ['required', 'string', 'max:255'],
+            'recipe_template_id' => ['nullable', 'integer', 'exists:recipe_templates,id'],
             'process' => ['required', 'string', 'max:255'],
             'operator_name' => ['nullable', 'string', 'max:255'],
             'workstation' => ['nullable', 'string', 'max:255'],
@@ -24,6 +79,7 @@ class ProcessApiController extends Controller
         $batch = Batch::updateOrCreate(
             ['batch_id' => $validated['batch_id']],
             [
+                'recipe_template_id' => $validated['recipe_template_id'] ?? null,
                 'process' => $validated['process'],
                 'operator_name' => $validated['operator_name'] ?? null,
                 'workstation' => $validated['workstation'] ?? null,
@@ -35,6 +91,7 @@ class ProcessApiController extends Controller
         return response()->json([
             'id' => $batch->id,
             'batch_id' => $batch->batch_id,
+            'recipe_template_id' => $batch->recipe_template_id,
             'status' => $batch->status,
         ]);
     }
@@ -43,15 +100,23 @@ class ProcessApiController extends Controller
     {
         $validated = $request->validate([
             'batch_id' => ['nullable', 'integer', 'exists:batches,id'],
+            'recipe_template_id' => ['nullable', 'integer', 'exists:recipe_templates,id'],
             'process' => ['required', 'string', 'max:255'],
             'step_number' => ['required', 'integer', 'min:1'],
             'code' => ['required', 'string', 'max:255'],
         ]);
 
-        $material = Material::where('process', $validated['process'])
+        $query = Material::query()
             ->where('step_number', $validated['step_number'])
-            ->where('code', $validated['code'])
-            ->first();
+            ->where('code', $validated['code']);
+
+        if (!empty($validated['recipe_template_id'])) {
+            $query->where('recipe_template_id', $validated['recipe_template_id']);
+        } else {
+            $query->where('process', $validated['process']);
+        }
+
+        $material = $query->first();
 
         MaterialScan::create([
             'batch_id' => $validated['batch_id'] ?? null,
@@ -63,15 +128,9 @@ class ProcessApiController extends Controller
             'scanned_at' => now(),
         ]);
 
-        $expected = Material::where('process', $validated['process'])
-            ->where('step_number', $validated['step_number'])
-            ->orderBy('id')
-            ->get(['name', 'code']);
-
         return response()->json([
             'valid' => (bool) $material,
             'material' => $material,
-            'expected' => $expected,
         ]);
     }
 
@@ -126,7 +185,8 @@ class ProcessApiController extends Controller
 
     public function history(): JsonResponse
     {
-        $batches = Batch::withCount(['logs', 'issues', 'scans'])
+        $batches = Batch::with(['recipeTemplate'])
+            ->withCount(['logs', 'issues', 'scans'])
             ->latest()
             ->take(20)
             ->get();

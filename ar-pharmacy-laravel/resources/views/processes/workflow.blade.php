@@ -63,6 +63,8 @@
             <p><strong>Batch:</strong> <span id="workflowBatchId">DEMO-BATCH</span></p>
             <p><strong>Operator:</strong> <span id="workflowOperator">Demo Operator</span></p>
             <p><strong>Workstation:</strong> <span id="workflowWorkstation">Demo Workstation</span></p>
+            <p><strong>Reference:</strong> <span id="workflowReferenceSource">NRF-style demo template</span></p>
+            <p><strong>Reference code:</strong> <span id="workflowReferenceCode">NRF-DEMO-OINTMENT-001</span></p>
           </div>
 
           <div class="step-meta">
@@ -187,6 +189,7 @@
             <p><strong>Batch ID:</strong> <span id="completedBatchId">DEMO-BATCH</span></p>
             <p><strong>Operator:</strong> <span id="completedOperator">Demo Operator</span></p>
             <p><strong>Workstation:</strong> <span id="completedWorkstation">Demo Workstation</span></p>
+            <p><strong>Reference code:</strong> <span id="completedReferenceCode">NRF-DEMO-OINTMENT-001</span></p>
             <p><strong>Completed steps:</strong> <span id="completedStepCount">0</span></p>
             <p><strong>Reported issues:</strong> <span id="completedIssueCount">0</span></p>
             <p><strong>Timers used:</strong> <span id="completedTimerCount">0</span></p>

@@ -4,19 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Material extends Model
+class RecipeStep extends Model
 {
     protected $fillable = [
         'recipe_template_id',
-        'process',
         'step_number',
-        'name',
-        'code',
-        'is_required',
+        'title',
+        'description',
+        'warning',
+        'ar_hint',
+        'risk',
+        'timer_seconds',
+        'checklist_items',
     ];
 
     protected $casts = [
-        'is_required' => 'boolean',
+        'checklist_items' => 'array',
     ];
 
     public function template()

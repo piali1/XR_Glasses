@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Batch extends Model
 {
     protected $fillable = [
+        'recipe_template_id',
         'batch_id',
         'process',
         'operator_name',
@@ -34,5 +35,10 @@ class Batch extends Model
     public function scans()
     {
         return $this->hasMany(MaterialScan::class);
+    }
+
+    public function recipeTemplate()
+    {
+        return $this->belongsTo(RecipeTemplate::class, 'recipe_template_id');
     }
 }

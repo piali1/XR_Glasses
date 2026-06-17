@@ -41,6 +41,7 @@ let materialVerified = false;
 let scannedMaterialCodes = new Set();
 let activeIssue = null;
 let backendBatchId = null;
+let activeRecipeTemplate = null;
 let qrScanInterval = null;
 let qrDetector = null;
 
@@ -85,6 +86,7 @@ async function createBackendBatch() {
   try {
     const batch = await backendPost("/api/batches", {
       batch_id: batchInfo.batchId,
+      recipe_template_id: activeRecipeTemplate?.id || null,
       process: selectedProcess,
       operator_name: batchInfo.operator,
       workstation: batchInfo.workstation
@@ -319,7 +321,65 @@ const processSteps = {
   ]
 };
 
-const steps = processSteps[selectedProcess] || processSteps.ointment;
+let steps = processSteps[selectedProcess] || processSteps.ointment;
+
+
+async function loadRecipeTemplateFromBackend() {
+  try {
+    const templatesResponse = await fetch(`/api/recipe-templates?process=${selectedProcess}`, {
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    if (!templatesResponse.ok) {
+      throw new Error("Template list request failed");
+    }
+
+    const templates = await templatesResponse.json();
+
+    if (!templates.length) {
+      console.warn("No backend recipe template found. Using local fallback steps.");
+      return;
+    }
+
+    const templateResponse = await fetch(`/api/recipe-templates/${templates[0].id}`, {
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    if (!templateResponse.ok) {
+      throw new Error("Template detail request failed");
+    }
+
+    activeRecipeTemplate = await templateResponse.json();
+
+    steps = activeRecipeTemplate.steps.map(step => ({
+      title: step.title,
+      description: step.description,
+      warning: step.warning,
+      arHint: step.ar_hint,
+      risk: step.risk,
+      timer: step.timer_seconds,
+      materials: step.materials.map(material => material.name),
+      materialCodes: step.materials.map(material => material.code),
+      checklist: step.checklist_items || []
+    }));
+
+    processNames[selectedProcess] = activeRecipeTemplate.title;
+
+    console.log("Loaded backend recipe template", activeRecipeTemplate);
+  } catch (error) {
+    console.error("Could not load backend recipe template. Using local fallback steps.", error);
+  }
+}
+
+async function initializeWorkflow() {
+  await loadRecipeTemplateFromBackend();
+  await createBackendBatch();
+  updateStep();
+}
 
 async function startCamera() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -362,6 +422,17 @@ function updateStep() {
   document.getElementById("workflowBatchId").textContent = batchInfo.batchId;
   document.getElementById("workflowOperator").textContent = batchInfo.operator;
   document.getElementById("workflowWorkstation").textContent = batchInfo.workstation;
+
+  const referenceSource = document.getElementById("workflowReferenceSource");
+  const referenceCode = document.getElementById("workflowReferenceCode");
+
+  if (referenceSource) {
+    referenceSource.textContent = activeRecipeTemplate?.reference_source || "NRF-style demo template";
+  }
+
+  if (referenceCode) {
+    referenceCode.textContent = activeRecipeTemplate?.reference_code || "NRF-DEMO-OINTMENT-001";
+  }
   stepCounter.textContent = `Step ${currentStep + 1} of ${steps.length}`;
   stepStatus.textContent = currentStep === steps.length - 1 ? "Final step" : "In progress";
   stepTitle.textContent = step.title;
@@ -388,7 +459,7 @@ function renderMaterials(step) {
   scannedMaterialCodes = new Set();
 
   step.materials.forEach(material => {
-    const code = toMaterialCode(material);
+    const code = step.materialCodes?.[step.materials.indexOf(material)] || toMaterialCode(material);
     const item = document.createElement("li");
 
     item.dataset.code = code;
@@ -567,6 +638,11 @@ function processWrongMaterial(scannedCode) {
 
 function getExpectedMaterialCodes() {
   const step = steps[currentStep];
+
+  if (step.materialCodes && step.materialCodes.length > 0) {
+    return step.materialCodes;
+  }
+
   return step.materials.map(material => toMaterialCode(material));
 }
 
@@ -873,6 +949,11 @@ function showCompletionSummary() {
   document.getElementById("completedOperator").textContent = batchInfo.operator;
   document.getElementById("completedWorkstation").textContent = batchInfo.workstation;
 
+  const completedReferenceCode = document.getElementById("completedReferenceCode");
+  if (completedReferenceCode) {
+    completedReferenceCode.textContent = activeRecipeTemplate?.reference_code || "NRF-DEMO-OINTMENT-001";
+  }
+
   document.getElementById("completedStepCount").textContent =
     `${completedSteps.size} of ${steps.length}`;
 
@@ -923,6 +1004,7 @@ Process: ${processNames[selectedProcess] || "Pharmacy Process"}
 Batch ID: ${batchInfo.batchId}
 Operator: ${batchInfo.operator}
 Workstation: ${batchInfo.workstation}
+Reference code: ${activeRecipeTemplate?.reference_code || "NRF-DEMO-OINTMENT-001"}
 
 Started at: ${batchInfo.startedAt.toLocaleString()}
 Finished at: ${finishedAt.toLocaleString()}
@@ -971,5 +1053,4 @@ window.restartProcess = restartProcess;
 window.downloadProcessReport = downloadProcessReport;
 
 startCamera();
-createBackendBatch();
-updateStep();
+initializeWorkflow();
