@@ -192,3 +192,59 @@ button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+
+.hidden {
+  display: none !important;
+}
+
+.completion-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.completion-card {
+  max-width: 520px;
+  width: 100%;
+  background: rgba(17, 24, 39, 0.96);
+  border-radius: 24px;
+  padding: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+  text-align: center;
+}
+
+.completion-card h2 {
+  font-size: 32px;
+  margin-bottom: 14px;
+}
+
+.completion-card p {
+  color: #e5e7eb;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.completion-summary {
+  text-align: left;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  margin: 20px 0;
+}
+
+.completion-summary p {
+  margin-bottom: 8px;
+}
+
+.completion-card button {
+  width: 100%;
+  background: white;
+  color: #111827;
+}

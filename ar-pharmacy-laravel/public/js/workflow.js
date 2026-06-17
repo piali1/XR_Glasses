@@ -172,7 +172,7 @@ function nextStep() {
     currentStep++;
     updateStep();
   } else {
-    alert("Process completed successfully.");
+    showCompletionSummary();
   }
 }
 
@@ -242,6 +242,19 @@ function updateNextButtonState() {
 checkItems.forEach(item => {
   item.addEventListener("change", updateNextButtonState);
 });
+
+
+function showCompletionSummary() {
+  const completionOverlay = document.getElementById("completionOverlay");
+  const completedProcessName = document.getElementById("completedProcessName");
+
+  completedProcessName.textContent = processNames[selectedProcess] || "Pharmacy Process";
+  completionOverlay.classList.remove("hidden");
+}
+
+function restartProcess() {
+  window.location.href = "/";
+}
 
 startCamera();
 updateStep();

@@ -77,6 +77,27 @@
 
       </main>
 
+      <div id="completionOverlay" class="completion-overlay hidden">
+        <section class="completion-card">
+          <p class="eyebrow">Workflow completed</p>
+          <h2>Process completed successfully</h2>
+
+          <p>
+            The selected pharmacy process has been completed.
+            All workflow steps were confirmed successfully.
+          </p>
+
+          <div class="completion-summary">
+            <p><strong>Process:</strong> <span id="completedProcessName">Pharmacy Process</span></p>
+            <p><strong>Status:</strong> All steps confirmed</p>
+            <p><strong>Result:</strong> Preparation finished</p>
+          </div>
+
+          <button onclick="restartProcess()">Return to process selection</button>
+        </section>
+      </div>
+
+
     </div>
 
   </div>
