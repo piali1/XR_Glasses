@@ -27,7 +27,16 @@ function startProcess() {
     return;
   }
 
-  window.location.href = "/workflow?process=" + selectedProcess;
+  const batchId = document.getElementById("batchId")?.value || "DEMO-BATCH";
+  const operatorName = document.getElementById("operatorName")?.value || "Demo Operator";
+  const workstation = document.getElementById("workstation")?.value || "Demo Workstation";
 
+  const params = new URLSearchParams({
+    process: selectedProcess,
+    batchId: batchId,
+    operator: operatorName,
+    workstation: workstation
+  });
 
+  window.location.href = "/workflow?" + params.toString();
 }
