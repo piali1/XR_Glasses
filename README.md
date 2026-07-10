@@ -46,6 +46,26 @@ This prototype simulates that XR experience through a browser-based AR-like came
 - Supervisor quality review
 - Laravel backend with SQLite database
 
+## Backend-based Content Model
+
+The prototype includes a backend-based semantic content model through the `content_items` table.
+
+This model stores SOPs, checklists, training content, workflow templates, QM evidence, compliance notes and role/permission concepts with metadata such as version, validity, area, responsible role, approval status, process and step number.
+
+The workflow uses this model to display context-sensitive content directly inside the current process step.
+
+## XR Pharmacy Hub Module
+
+The prototype includes an XR Pharmacy Hub overview at:
+
+    /hub
+
+The hub page loads content from the backend and shows SOPs, checklists, training content, workflow templates, QM evidence, roles and permissions.
+
+## Architecture and Compliance
+
+The repository includes `ARCHITECTURE_AND_COMPLIANCE.md` with the system architecture, semantic content model, role concept, QM evidence, data protection considerations and limitations.
+
 ## Technology Stack
 
 - Laravel

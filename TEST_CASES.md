@@ -200,3 +200,32 @@ Steps:
 
 Expected Result:
 The documentation explains how the prototype supports an XR Pharmacy Hub concept with backend content model, role concept, QM evidence and compliance considerations.
+
+
+## Test Case 15: Context-sensitive Content Panel
+
+Goal:
+Verify that the workflow displays related content for the current process step.
+
+Steps:
+1. Open the ointment workflow.
+2. Check the context-sensitive content panel.
+3. Verify that SOP, checklist, training, QM or role-related content is shown with metadata.
+
+Expected Result:
+The workflow displays backend-loaded content items with type, title, version, validity, area and responsible role.
+
+## Test Case 16: Architecture and Compliance Documentation
+
+Goal:
+Verify that the project documents architecture, compliance, data protection, roles and QM evidence.
+
+Steps:
+1. Open ARCHITECTURE_AND_COMPLIANCE.md.
+2. Check the architecture diagram.
+3. Check the semantic content model.
+4. Check the role and permission concept.
+5. Check the QM evidence and data protection sections.
+
+Expected Result:
+The documentation explains how the prototype supports an XR Pharmacy Hub concept with backend content model, role concept, QM evidence and compliance considerations.

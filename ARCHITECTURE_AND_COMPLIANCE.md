@@ -1,6 +1,6 @@
 # Architecture and Compliance
 
-This document describes the technical architecture, content model, quality management evidence, role concept and compliance considerations of the AR Pharmacy Process Assistant prototype.
+This document describes the technical architecture, semantic content model, quality management evidence, role concept and compliance considerations of the AR Pharmacy Process Assistant prototype.
 
 ## Purpose
 
@@ -14,67 +14,20 @@ The goal is to show how digital content can be displayed exactly where it is nee
 flowchart LR
     A[XR Glasses / Browser UI] --> B[Context-sensitive Workflow]
     B --> C[Laravel Backend]
-    C --> D[Content Model]
+    C --> D[Semantic Content Model]
     C --> E[QR Material Validation]
     C --> F[Process Documentation]
-    F --> G[Supervisor Review]
-    F --> H[Process History]
-    F --> I[Digital Process Report]
-    D --> J[SOPs / Checklists / Training / QM Content]
+    D --> G[SOPs / Checklists / Training / QM Content]
+    F --> H[Supervisor Review]
+    F --> I[Process History]
+    F --> J[Digital Process Report]
 ```
-
-## Main Components
-
-### XR UI / Browser Frontend
-
-The frontend simulates an XR glasses interface through an AR-like browser view. It displays:
-
-- workflow steps
-- warnings
-- AR hints
-- required materials
-- QR validation results
-- checklists
-- required process times
-- context-sensitive content
-- completion summary
-- supervisor review
-
-### Laravel Backend
-
-The backend provides API endpoints for:
-
-- batch creation
-- recipe template loading
-- material QR validation
-- process log storage
-- issue storage
-- batch completion
-- process history
-- supervisor review
-- context-sensitive content items
-
-### Database
-
-The SQLite database stores structured process and content data.
-
-Main data structures:
-
-- recipe templates
-- recipe steps
-- materials
-- batches
-- material scans
-- process logs
-- process issues
-- supervisor reviews
-- content items
 
 ## Semantic Content Model
 
-The `content_items` structure represents the semantic information model of the XR Pharmacy Hub.
+The `content_items` table represents the semantic information model of the XR Pharmacy Hub.
 
-It can store different content types:
+It stores different content types:
 
 - SOP
 - checklist
@@ -99,11 +52,11 @@ Each content item contains metadata:
 - display context
 - content
 
-This allows information to be displayed depending on the current process and workflow step.
+This allows digital content to be displayed depending on the current process and workflow step.
 
 ## Context-sensitive Information Display
 
-The workflow can show related content for the current step, such as:
+The workflow shows related content for the current step, such as:
 
 - related SOP
 - related checklist
@@ -116,24 +69,9 @@ This supports the project idea:
 
 Digital content appears exactly where it is needed during the pharmacy workflow.
 
-## QR Material Validation
-
-Each workflow step defines required materials. Each material has a QR code.
-
-The system validates QR codes against:
-
-- selected process
-- current workflow step
-- expected material code
-- backend material database
-
-Correct material scans are stored. Wrong material scans block the workflow and create process issues.
-
 ## Quality Management Evidence
 
-The prototype creates QM-relevant evidence during the workflow.
-
-Stored evidence includes:
+The prototype creates QM-relevant evidence during the workflow:
 
 - batch metadata
 - material scan records
@@ -143,8 +81,6 @@ Stored evidence includes:
 - supervisor review
 - digital process report
 - process history
-
-This supports traceability and makes the prototype more than a visual mockup.
 
 ## Role and Permission Concept
 
@@ -157,8 +93,6 @@ The current prototype does not implement a real login system. However, the inten
 | Supervisor | Approve or reject documented batches |
 | Admin | Maintain SOPs, templates, content metadata and permissions |
 
-A production version should implement authentication, role-based access control and audit logging.
-
 ## Data Protection Considerations
 
 The prototype uses demo data only.
@@ -170,20 +104,9 @@ It does not store:
 - real medication records
 - real licensed NRF content
 
-Stored data is limited to prototype workflow data such as demo batch IDs, process logs, QR scan results and supervisor reviews.
+Stored data is limited to prototype workflow data such as demo batch IDs, process logs, QR scan results, content metadata and supervisor reviews.
 
-A production system would need:
-
-- user authentication
-- role-based access control
-- encryption
-- audit logs
-- retention rules
-- data minimization
-- access documentation
-- compliance with pharmacy and data protection regulations
-
-## Regulatory and Professional Limitations
+## Limitations
 
 This prototype is not a production-ready pharmacy or medical system.
 
@@ -195,21 +118,4 @@ Current limitations:
 - no production-grade audit trail
 - no authentication or role-based access control
 - no formal validation for real pharmacy use
-- no integration with pharmacy ERP or documentation systems
-- no automated test suite for regulated use
-
-## Future Work
-
-Possible future development steps:
-
-- integration with real XR hardware
-- WebXR support
-- role-based login
-- admin interface for maintaining SOPs and templates
-- licensed content integration
-- stronger audit logging
-- integration with pharmacy systems
-- validation with pharmacy staff
-- usability testing
-- automated tests
-- production deployment concept
+- no integration with pharmacy ERP systems

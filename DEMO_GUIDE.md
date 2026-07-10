@@ -49,6 +49,16 @@ Explain:
 
 The screen simulates an XR glasses view. In a real XR setup, the user would see instructions, warnings, timers and validation results directly in the field of view while keeping both hands free.
 
+### Context-sensitive Content Panel
+
+Show the context-sensitive content panel inside the workflow.
+
+Explain:
+
+The workflow does not only show static instructions. It loads related SOPs, checklists, training content, QM evidence and metadata from the backend content model depending on the current process and step.
+
+This demonstrates the core idea of the project: digital content appears exactly where it is needed.
+
 ### 4. Material Verification
 
 Open the material verification area.
@@ -177,3 +187,12 @@ The document shows the technical architecture, the semantic content model, the r
 
 This connects the functional prototype with the regulatory and architectural requirements of an XR Pharmacy Hub.
 
+
+
+### Architecture and Compliance
+
+Open `ARCHITECTURE_AND_COMPLIANCE.md`.
+
+Explain:
+
+The document connects the functional prototype with architecture, semantic content model, role concept, quality management evidence and data protection considerations.
