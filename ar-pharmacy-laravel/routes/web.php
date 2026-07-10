@@ -20,6 +20,7 @@ Route::post('/api/batches/{batch}/complete', [ProcessApiController::class, 'comp
 Route::get('/api/history', [ProcessApiController::class, 'history']);
 
 
+Route::get('/api/content-items', [ProcessApiController::class, 'contentItems']);
 Route::get('/api/recipe-templates', [ProcessApiController::class, 'recipeTemplates']);
 Route::get('/api/recipe-templates/{template}', [ProcessApiController::class, 'recipeTemplate']);
 

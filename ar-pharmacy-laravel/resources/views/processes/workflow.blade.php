@@ -88,6 +88,18 @@
           </div>
 
 
+
+          <div class="context-content-box">
+            <div class="section-title-row">
+              <h3>Context-sensitive content</h3>
+              <span id="contentContextStatus">Loading</span>
+            </div>
+
+            <div id="relatedContentItems" class="related-content-items">
+              Related SOPs, training content and QM notes will appear here.
+            </div>
+          </div>
+
           <div class="material-box">
             <div class="section-title-row">
               <h3>Material verification</h3>
@@ -196,7 +208,7 @@
             <p><strong>Reference code:</strong> <span id="completedReferenceCode">NRF-DEMO-OINTMENT-001</span></p>
             <p><strong>Completed steps:</strong> <span id="completedStepCount">0</span></p>
             <p><strong>Reported issues:</strong> <span id="completedIssueCount">0</span></p>
-            <p><strong>Timers used:</strong> <span id="completedTimerCount">0</span></p>
+            <p><strong>Required process times completed:</strong> <span id="completedTimerCount">0</span></p>
             <p><strong>Material checks:</strong> <span id="completedMaterialCount">0</span></p>
             <p><strong>Status:</strong> Validated and finished</p>
           </div>

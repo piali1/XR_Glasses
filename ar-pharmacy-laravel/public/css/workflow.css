@@ -963,3 +963,61 @@ button:hover {
 .review-result {
   font-weight: 700;
 }
+
+
+/* Context-sensitive content panel */
+
+.context-content-box {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.56);
+  border: 1px solid rgba(96, 165, 250, 0.28);
+}
+
+.related-content-items {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.related-content-item {
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(30, 41, 59, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.related-content-top {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.related-content-top span {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.22);
+  color: #bfdbfe;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.related-content-top strong {
+  color: #ffffff;
+}
+
+.related-content-item p {
+  color: #e2e8f0;
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+.related-content-item small {
+  color: #cbd5e1;
+  line-height: 1.4;
+}

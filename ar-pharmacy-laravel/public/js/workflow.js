@@ -32,6 +32,8 @@ const materialResult = document.getElementById("materialResult");
 const qrScannerBox = document.getElementById("qrScannerBox");
 const qrScannerStatus = document.getElementById("qrScannerStatus");
 const qrFileInput = document.getElementById("qrFileInput");
+const relatedContentItems = document.getElementById("relatedContentItems");
+const contentContextStatus = document.getElementById("contentContextStatus");
 
 let currentStep = 0;
 let timerInterval = null;
@@ -153,6 +155,73 @@ async function completeBackendBatch() {
   } catch (error) {
     console.error("Could not complete backend batch", error);
   }
+}
+
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+async function loadRelatedContentForStep() {
+  if (!relatedContentItems || !contentContextStatus) {
+    return;
+  }
+
+  contentContextStatus.textContent = "Loading";
+
+  try {
+    const response = await fetch(`/api/content-items?process=${encodeURIComponent(selectedProcess)}&step_number=${currentStep + 1}`, {
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Content request failed");
+    }
+
+    const items = await response.json();
+    renderRelatedContentItems(items);
+  } catch (error) {
+    console.error(error);
+    contentContextStatus.textContent = "Unavailable";
+    relatedContentItems.innerHTML = "<p>Context content could not be loaded.</p>";
+  }
+}
+
+function renderRelatedContentItems(items) {
+  if (!relatedContentItems || !contentContextStatus) {
+    return;
+  }
+
+  if (!items || items.length === 0) {
+    contentContextStatus.textContent = "No content";
+    relatedContentItems.innerHTML = "<p>No related content configured for this step.</p>";
+    return;
+  }
+
+  contentContextStatus.textContent = `${items.length} item(s)`;
+
+  relatedContentItems.innerHTML = items.map(item => `
+    <article class="related-content-item">
+      <div class="related-content-top">
+        <span>${escapeHtml(item.type)}</span>
+        <strong>${escapeHtml(item.title)}</strong>
+      </div>
+      <p>${escapeHtml(item.content)}</p>
+      <small>
+        Version ${escapeHtml(item.version)}
+        · ${escapeHtml(item.area || "General")}
+        · valid until ${escapeHtml(item.valid_until || "not specified")}
+        · responsible: ${escapeHtml(item.responsible_role || "not specified")}
+      </small>
+    </article>
+  `).join("");
 }
 
 const processNames = {
@@ -450,6 +519,7 @@ function updateStep() {
 
   renderMaterials(step);
   renderChecklist(step);
+  loadRelatedContentForStep();
   resetTimerForStep(step);
   renderProcessLog();
   updateNextButtonState();
