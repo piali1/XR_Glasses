@@ -684,3 +684,88 @@ button:disabled {
   background: rgba(59, 130, 246, 0.18);
   border: 1px solid rgba(96, 165, 250, 0.35);
 }
+
+
+.supervisor-review-card {
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.supervisor-review-card h2 {
+  margin-bottom: 8px;
+}
+
+.supervisor-review-card p {
+  color: #d1d5db;
+  line-height: 1.5;
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.review-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #e5e7eb;
+  font-weight: 800;
+}
+
+.review-grid input,
+.review-grid textarea {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: #111827;
+}
+
+.review-grid textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.review-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.review-actions button {
+  flex: 1;
+}
+
+.approve-button {
+  background: #16a34a !important;
+  color: white !important;
+}
+
+.reject-button {
+  background: #dc2626 !important;
+  color: white !important;
+}
+
+.review-result {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(148, 163, 184, 0.16);
+}
+
+.review-result.success {
+  background: rgba(34, 197, 94, 0.18);
+  color: #bbf7d0;
+}
+
+.review-result.error {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fecaca;
+}

@@ -202,6 +202,33 @@
             <ul id="completionLogList"></ul>
           </div>
 
+          
+          <section class="supervisor-review-card">
+            <h2>Supervisor Review</h2>
+            <p>
+              After the workflow is completed, a supervising person can approve or reject the documented preparation.
+            </p>
+
+            <div class="review-grid">
+              <label>
+                Reviewer name
+                <input id="reviewerName" type="text" placeholder="e.g. Supervisor" />
+              </label>
+
+              <label>
+                Review comment
+                <textarea id="reviewComment" placeholder="Optional review comment"></textarea>
+              </label>
+            </div>
+
+            <div class="review-actions">
+              <button onclick="submitSupervisorReview('approved')" class="approve-button">Approve preparation</button>
+              <button onclick="submitSupervisorReview('rejected')" class="reject-button">Reject preparation</button>
+            </div>
+
+            <p id="supervisorReviewResult" class="review-result">No supervisor review submitted yet.</p>
+          </section>
+
           <button onclick="downloadProcessReport()">Download process report</button>
           <button onclick="restartProcess()">Return to process selection</button>
         </section>

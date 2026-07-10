@@ -8,6 +8,7 @@ use App\Models\MaterialScan;
 use App\Models\ProcessIssue;
 use App\Models\ProcessLog;
 use App\Models\RecipeTemplate;
+use App\Models\SupervisorReview;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -181,6 +182,28 @@ class ProcessApiController extends Controller
             'status' => $batch->status,
             'completed_at' => $batch->completed_at,
         ]);
+    }
+
+
+    public function storeSupervisorReview(Request $request, Batch $batch): JsonResponse
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'string', 'in:approved,rejected'],
+            'reviewer_name' => ['nullable', 'string', 'max:255'],
+            'comment' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $review = SupervisorReview::updateOrCreate(
+            ['batch_id' => $batch->id],
+            [
+                'status' => $validated['status'],
+                'reviewer_name' => $validated['reviewer_name'] ?? null,
+                'comment' => $validated['comment'] ?? null,
+                'reviewed_at' => now(),
+            ]
+        );
+
+        return response()->json($review);
     }
 
     public function history(): JsonResponse

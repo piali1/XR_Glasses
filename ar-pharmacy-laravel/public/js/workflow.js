@@ -42,6 +42,7 @@ let scannedMaterialCodes = new Set();
 let activeIssue = null;
 let backendBatchId = null;
 let activeRecipeTemplate = null;
+let supervisorReview = null;
 let qrScanInterval = null;
 let qrDetector = null;
 
@@ -1024,6 +1025,39 @@ function showCompletionSummary() {
 }
 
 
+
+async function submitSupervisorReview(status) {
+  const result = document.getElementById("supervisorReviewResult");
+  const reviewerName = document.getElementById("reviewerName")?.value || "Demo Supervisor";
+  const reviewComment = document.getElementById("reviewComment")?.value || "";
+
+  if (!backendBatchId) {
+    result.textContent = "No backend batch found. Please complete the workflow again.";
+    result.className = "review-result error";
+    return;
+  }
+
+  try {
+    const review = await backendPost(`/api/batches/${backendBatchId}/review`, {
+      status: status,
+      reviewer_name: reviewerName,
+      comment: reviewComment
+    });
+
+    supervisorReview = review;
+
+    result.textContent =
+      `Supervisor review submitted: ${status.toUpperCase()} by ${reviewerName}.`;
+    result.className = status === "approved"
+      ? "review-result success"
+      : "review-result error";
+  } catch (error) {
+    console.error(error);
+    result.textContent = "Supervisor review could not be saved.";
+    result.className = "review-result error";
+  }
+}
+
 function downloadProcessReport() {
   const finishedAt = new Date();
 
@@ -1055,6 +1089,7 @@ Completed steps: ${completedSteps.size} of ${steps.length}
 Material checks: ${materialVerifiedSteps.size}
 Timers used: ${timerUsedSteps.size}
 Reported issues: ${reportedIssues.length}
+Supervisor review: ${supervisorReview ? supervisorReview.status + " by " + (supervisorReview.reviewer_name || "Supervisor") : "Not reviewed"}
 
 Digital process documentation:
 ${stepLines}
@@ -1092,6 +1127,7 @@ window.nextStep = nextStep;
 window.previousStep = previousStep;
 window.restartProcess = restartProcess;
 window.downloadProcessReport = downloadProcessReport;
+window.submitSupervisorReview = submitSupervisorReview;
 
 startCamera();
 initializeWorkflow();

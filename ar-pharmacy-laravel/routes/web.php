@@ -24,7 +24,7 @@ Route::get('/api/recipe-templates', [ProcessApiController::class, 'recipeTemplat
 Route::get('/api/recipe-templates/{template}', [ProcessApiController::class, 'recipeTemplate']);
 
 Route::get('/history', function () {
-    $batches = \App\Models\Batch::with('recipeTemplate')
+    $batches = \App\Models\Batch::with(['recipeTemplate', 'supervisorReview'])
         ->withCount(['logs', 'issues', 'scans'])
         ->latest()
         ->get();
@@ -33,4 +33,4 @@ Route::get('/history', function () {
         'batches' => $batches,
     ]);
 });
-
+Route::post('/api/batches/{batch}/review', [ProcessApiController::class, 'storeSupervisorReview']);

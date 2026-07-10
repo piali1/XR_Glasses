@@ -41,4 +41,9 @@ class Batch extends Model
     {
         return $this->belongsTo(RecipeTemplate::class, 'recipe_template_id');
     }
+
+    public function supervisorReview()
+    {
+        return $this->hasOne(SupervisorReview::class);
+    }
 }

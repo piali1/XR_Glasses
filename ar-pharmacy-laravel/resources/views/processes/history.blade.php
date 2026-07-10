@@ -63,6 +63,7 @@
                 <th>Process</th>
                 <th>Operator</th>
                 <th>Status</th>
+                <th>Review</th>
                 <th>Scans</th>
                 <th>Logs</th>
                 <th>Issues</th>
@@ -86,6 +87,16 @@
                     <span class="status status-{{ $batch->status }}">
                       {{ ucfirst(str_replace('_', ' ', $batch->status)) }}
                     </span>
+                  </td>
+                  <td>
+                    @if ($batch->supervisorReview)
+                      <span class="review-badge review-{{ $batch->supervisorReview->status }}">
+                        {{ ucfirst($batch->supervisorReview->status) }}
+                      </span>
+                      <small>{{ $batch->supervisorReview->reviewer_name ?? 'Supervisor' }}</small>
+                    @else
+                      <span class="review-badge review-pending">Pending</span>
+                    @endif
                   </td>
                   <td>{{ $batch->scans_count }}</td>
                   <td>{{ $batch->logs_count }}</td>
