@@ -167,6 +167,21 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+
+function formatContentType(type) {
+  return String(type || "content")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, letter => letter.toUpperCase());
+}
+
+function formatContentDate(value) {
+  if (!value) {
+    return "not specified";
+  }
+
+  return String(value).split("T")[0];
+}
+
 async function loadRelatedContentForStep() {
   if (!relatedContentItems || !contentContextStatus) {
     return;
@@ -210,14 +225,14 @@ function renderRelatedContentItems(items) {
   relatedContentItems.innerHTML = items.map(item => `
     <article class="related-content-item">
       <div class="related-content-top">
-        <span>${escapeHtml(item.type)}</span>
+        <span>${escapeHtml(formatContentType(item.type))}</span>
         <strong>${escapeHtml(item.title)}</strong>
       </div>
       <p>${escapeHtml(item.content)}</p>
       <small>
         Version ${escapeHtml(item.version)}
         · ${escapeHtml(item.area || "General")}
-        · valid until ${escapeHtml(item.valid_until || "not specified")}
+        · valid until ${escapeHtml(formatContentDate(item.valid_until))}
         · responsible: ${escapeHtml(item.responsible_role || "not specified")}
       </small>
     </article>
