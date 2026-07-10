@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Batch;
+use App\Models\ContentItem;
 use App\Models\Material;
 use App\Models\MaterialScan;
 use App\Models\ProcessIssue;
@@ -65,6 +66,42 @@ class ProcessApiController extends Controller
             'is_demo' => $template->is_demo,
             'steps' => $steps,
         ]);
+    }
+
+
+    public function contentItems(Request $request): JsonResponse
+    {
+        $query = ContentItem::query();
+
+        if ($request->filled('process')) {
+            $process = (string) $request->query('process');
+
+            $query->where(function ($query) use ($process) {
+                $query->whereNull('process')
+                    ->orWhere('process', $process);
+            });
+        }
+
+        if ($request->filled('step_number')) {
+            $stepNumber = (int) $request->query('step_number');
+
+            $query->where(function ($query) use ($stepNumber) {
+                $query->whereNull('step_number')
+                    ->orWhere('step_number', $stepNumber);
+            });
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', (string) $request->query('type'));
+        }
+
+        $items = $query
+            ->orderByRaw('CASE WHEN step_number IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('type')
+            ->orderBy('title')
+            ->get();
+
+        return response()->json($items);
     }
 
     public function createBatch(Request $request): JsonResponse
