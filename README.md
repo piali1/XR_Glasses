@@ -149,6 +149,14 @@ Recommended demo flow:
 14. Open the process history page.
 15. Show that batches, scans, logs, issues and reviews are stored in the backend database.
 
+## Architecture and Compliance
+
+The repository also includes `ARCHITECTURE_AND_COMPLIANCE.md`.
+
+This document describes the system architecture, semantic content model, context-sensitive information flow, role and permission concept, quality management evidence, data protection considerations and current limitations of the prototype.
+
+It also includes a Mermaid architecture diagram showing the flow from XR UI / browser frontend to Laravel backend, content model, QR validation, process documentation, supervisor review, history and digital report.
+
 ## Limitations and Future Work
 
 This is a proof-of-concept prototype, not a production-ready medical or pharmacy system.

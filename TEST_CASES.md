@@ -185,3 +185,18 @@ Steps:
 
 Expected Result:
 The QR validation still works through image upload.
+
+## Test Case 16: Architecture and Compliance Documentation
+
+Goal:
+Verify that the project documents architecture, compliance, data protection, roles and QM evidence.
+
+Steps:
+1. Open ARCHITECTURE_AND_COMPLIANCE.md.
+2. Check the architecture diagram.
+3. Check the semantic content model.
+4. Check the role and permission concept.
+5. Check the QM evidence and data protection sections.
+
+Expected Result:
+The documentation explains how the prototype supports an XR Pharmacy Hub concept with backend content model, role concept, QM evidence and compliance considerations.

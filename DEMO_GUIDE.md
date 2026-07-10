@@ -166,3 +166,14 @@ The backend stores batches, material scans, process logs, issues and supervisor 
 If live camera scanning does not work during the demo, use QR image upload or QR sheet upload.
 
 This still demonstrates the same backend validation logic.
+
+### 13. Architecture and Compliance
+
+Open `ARCHITECTURE_AND_COMPLIANCE.md`.
+
+Explain:
+
+The document shows the technical architecture, the semantic content model, the role and permission concept, quality management evidence, data protection considerations and limitations.
+
+This connects the functional prototype with the regulatory and architectural requirements of an XR Pharmacy Hub.
+
