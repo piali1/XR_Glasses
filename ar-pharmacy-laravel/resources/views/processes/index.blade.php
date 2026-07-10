@@ -10,6 +10,7 @@
 </head>
 <body>
 
+<a href="/hub" class="hub-floating-link">XR Hub</a>
 <a href="/history" class="history-floating-link">Process History</a>
 
 
