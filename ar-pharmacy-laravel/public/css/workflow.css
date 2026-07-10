@@ -862,3 +862,104 @@ button:disabled {
   background: rgba(15, 23, 42, 0.38);
   border: 1px solid rgba(148, 163, 184, 0.22);
 }
+
+
+/* Final UI polish */
+
+.qr-help-text {
+  margin: 12px 0 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(59, 130, 246, 0.14);
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  color: #dbeafe;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.material-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.material-actions button,
+.review-actions button,
+.completion-card button,
+button {
+  border-radius: 999px;
+  font-weight: 800;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+}
+
+.material-actions button:hover,
+.review-actions button:hover,
+.completion-card button:hover,
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+}
+
+#timerRequirement {
+  font-weight: 800;
+  color: #fde68a;
+}
+
+#timerDisplay {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+#timerButton {
+  background: rgba(251, 191, 36, 0.18);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  color: #fef3c7;
+}
+
+#requirementNote,
+.requirement-note {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.38);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.completion-card {
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+}
+
+.completion-card h1,
+.completion-card h2 {
+  letter-spacing: -0.02em;
+}
+
+.completion-card p {
+  line-height: 1.55;
+}
+
+.completion-card strong {
+  color: #bbf7d0;
+}
+
+.completion-card button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px 18px;
+}
+
+.supervisor-review-card {
+  border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+.supervisor-review-card h2::after {
+  content: " · backend stored";
+  color: #93c5fd;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.review-result {
+  font-weight: 700;
+}

@@ -181,7 +181,7 @@
       <div id="completionOverlay" class="completion-overlay hidden">
         <section class="completion-card">
           <p class="eyebrow">Workflow completed</p>
-          <h2>Process completed successfully</h2>
+          <h2>Process completed and documented successfully</h2>
 
           <p>
             The selected pharmacy process has been completed.

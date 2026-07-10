@@ -298,3 +298,58 @@ button:hover,
 .history-link:hover {
   transform: translateY(-1px);
 }
+
+
+/* Final start page polish */
+
+.demo-feature-strip {
+  max-width: 1180px;
+  margin: 28px auto 30px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.demo-feature-strip span {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #1f2937;
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.09);
+  border: 1px solid rgba(37, 99, 235, 0.16);
+}
+
+.process-card,
+.batch-box,
+.selected-box {
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.process-card:hover,
+.batch-box:hover,
+.selected-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 54px rgba(15, 23, 42, 0.12);
+}
+
+.start-button,
+button,
+.history-floating-link,
+.history-link {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.start-button:hover,
+button:hover,
+.history-floating-link:hover,
+.history-link:hover {
+  transform: translateY(-1px);
+}
+
+.history-floating-link {
+  font-weight: 900;
+}
