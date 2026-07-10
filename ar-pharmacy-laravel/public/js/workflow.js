@@ -710,16 +710,57 @@ async function scanQrFromFile(input) {
   image.onload = async () => {
     try {
       const detector = new BarcodeDetector({ formats: ["qr_code"] });
-      const codes = await detector.detect(image);
+      const detectedCodes = await detector.detect(image);
 
-      if (codes.length === 0) {
-        materialResult.textContent = "No QR code found in uploaded image. Please upload a clear QR code image.";
+      if (detectedCodes.length === 0) {
+        materialResult.textContent = "No QR code found in uploaded image. Please upload a clear QR code image or sheet.";
         materialResult.className = "material-result error";
         return;
       }
 
-      const scannedCode = codes[0].rawValue.trim();
-      await validateMaterialCode(scannedCode);
+      const uniqueCodes = [...new Set(
+        detectedCodes
+          .map(code => code.rawValue.trim())
+          .filter(Boolean)
+      )];
+
+      const expectedCodes = getExpectedMaterialCodes();
+
+      if (uniqueCodes.length === 1) {
+        await validateMaterialCode(uniqueCodes[0]);
+        return;
+      }
+
+      const relevantCodes = uniqueCodes.filter(code => expectedCodes.includes(code));
+      const newRelevantCodes = relevantCodes.filter(code => !scannedMaterialCodes.has(code));
+      const ignoredCount = uniqueCodes.length - relevantCodes.length;
+
+      if (relevantCodes.length === 0) {
+        materialResult.textContent =
+          "QR sheet scanned, but no QR code matches the current workflow step. Please upload a sheet containing the required materials.";
+        materialResult.className = "material-result error";
+        return;
+      }
+
+      if (newRelevantCodes.length === 0) {
+        materialResult.textContent =
+          "QR sheet scanned. All matching QR codes for this step were already verified.";
+        materialResult.className = "material-result success";
+        updateMaterialScanDisplay();
+        updateNextButtonState();
+        return;
+      }
+
+      for (const scannedCode of newRelevantCodes) {
+        await validateMaterialCode(scannedCode);
+      }
+
+      if (ignoredCount > 0) {
+        const step = steps[currentStep];
+        materialResult.textContent =
+          `${newRelevantCodes.length} matching QR code(s) verified for this step. ${ignoredCount} QR code(s) from other steps were ignored. Current status: ${scannedMaterialCodes.size}/${step.materials.length} verified.`;
+        materialResult.className = "material-result success";
+      }
     } catch (error) {
       console.error(error);
       materialResult.textContent = "Could not scan QR code from uploaded image.";

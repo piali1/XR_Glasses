@@ -102,7 +102,7 @@
 
             <div class="material-actions">
               <button onclick="scanMaterial()">Scan QR code</button>
-              <button onclick="openQrFileUpload()">Upload QR image</button>
+              <button onclick="openQrFileUpload()">Upload QR image / sheet</button>
               <input id="qrFileInput" class="hidden" type="file" accept="image/*" onchange="scanQrFromFile(this)" />
               <button onclick="simulateWrongMaterial()">Simulate wrong material</button>
             </div>
