@@ -22,3 +22,15 @@ Route::get('/api/history', [ProcessApiController::class, 'history']);
 
 Route::get('/api/recipe-templates', [ProcessApiController::class, 'recipeTemplates']);
 Route::get('/api/recipe-templates/{template}', [ProcessApiController::class, 'recipeTemplate']);
+
+Route::get('/history', function () {
+    $batches = \App\Models\Batch::with('recipeTemplate')
+        ->withCount(['logs', 'issues', 'scans'])
+        ->latest()
+        ->get();
+
+    return view('processes.history', [
+        'batches' => $batches,
+    ]);
+});
+

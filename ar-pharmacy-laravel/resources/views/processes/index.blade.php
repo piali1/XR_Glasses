@@ -10,6 +10,9 @@
 </head>
 <body>
 
+<a href="/history" class="history-floating-link">Process History</a>
+
+
   <div class="page">
 
     <header class="header">
