@@ -102,10 +102,14 @@
 
             <div class="material-actions">
               <button onclick="scanMaterial()">Scan QR code</button>
-              <button onclick="openQrFileUpload()">Upload QR image / sheet</button>
+              <button onclick="openQrFileUpload()">Upload QR image or QR sheet</button>
               <input id="qrFileInput" class="hidden" type="file" accept="image/*" onchange="scanQrFromFile(this)" />
               <button onclick="simulateWrongMaterial()">Simulate wrong material</button>
             </div>
+
+            <p class="qr-help-text">
+              Use the camera for live QR scanning or upload a QR image / QR sheet. The system validates only the QR codes required for the current step.
+            </p>
 
             <div id="qrScannerBox" class="qr-scanner-box hidden">
               <p id="qrScannerStatus">Point the QR code into the camera view.</p>
@@ -204,7 +208,7 @@
 
           
           <section class="supervisor-review-card">
-            <h2>Supervisor Review</h2>
+            <h2>Supervisor Quality Review</h2>
             <p>
               After the workflow is completed, a supervising person can approve or reject the documented preparation.
             </p>
@@ -222,14 +226,14 @@
             </div>
 
             <div class="review-actions">
-              <button onclick="submitSupervisorReview('approved')" class="approve-button">Approve preparation</button>
-              <button onclick="submitSupervisorReview('rejected')" class="reject-button">Reject preparation</button>
+              <button onclick="submitSupervisorReview('approved')" class="approve-button">Approve documented preparation</button>
+              <button onclick="submitSupervisorReview('rejected')" class="reject-button">Reject documented preparation</button>
             </div>
 
             <p id="supervisorReviewResult" class="review-result">No supervisor review submitted yet.</p>
           </section>
 
-          <button onclick="downloadProcessReport()">Download process report</button>
+          <button onclick="downloadProcessReport()">Download digital process report</button>
           <button onclick="restartProcess()">Return to process selection</button>
         </section>
       </div>

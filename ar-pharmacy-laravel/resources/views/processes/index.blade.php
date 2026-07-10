@@ -23,7 +23,17 @@
       </p>
     </header>
 
-    <main class="process-grid">
+    
+    <section class="demo-feature-strip">
+      <span>Full-stack prototype</span>
+      <span>Real QR validation</span>
+      <span>QR sheet upload</span>
+      <span>NRF-style templates</span>
+      <span>Backend documentation</span>
+      <span>Supervisor review</span>
+    </section>
+
+<main class="process-grid">
 
       <section class="process-card" onclick="selectProcess('ointment')">
         <div class="icon">01</div>

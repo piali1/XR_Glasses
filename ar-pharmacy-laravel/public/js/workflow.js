@@ -813,14 +813,14 @@ function resetTimerForStep(step) {
   remainingSeconds = step.timer;
 
   if (step.timer > 0) {
-    timerRequirement.textContent = "Timer required before continuing";
+    timerRequirement.textContent = "Required process time must finish before continuing";
     timerButton.disabled = false;
-    timerButton.textContent = "Start Timer";
+    timerButton.textContent = "Start process time";
     timerDisplay.textContent = formatTime(step.timer);
   } else {
-    timerRequirement.textContent = "No timer required";
+    timerRequirement.textContent = "No required process time";
     timerButton.disabled = true;
-    timerButton.textContent = "No Timer";
+    timerButton.textContent = "No process time";
     timerDisplay.textContent = "00:00";
   }
 }
@@ -838,7 +838,7 @@ function startTimer() {
   }
 
   timerButton.disabled = true;
-  timerButton.textContent = "Timer running";
+  timerButton.textContent = "Process time running";
   timerUsedSteps.add(currentStep);
 
   timerInterval = setInterval(() => {
@@ -848,9 +848,9 @@ function startTimer() {
     if (remainingSeconds <= 0) {
       resetTimer();
       timerCompleted = true;
-      timerButton.textContent = "Timer completed";
+      timerButton.textContent = "Process time completed";
       updateNextButtonState();
-      alert("Timer finished. You can continue after confirming the checklist.");
+      alert("Required process time finished. You can continue after confirming the checklist.");
     }
   }, 1000);
 }
@@ -891,7 +891,7 @@ function updateNextButtonState() {
   } else if (!materialVerified) {
     requirementNote.textContent = "Scan and verify the required material before continuing.";
   } else if (!timerCompleted) {
-    requirementNote.textContent = "Complete the required timer before continuing.";
+    requirementNote.textContent = "Complete the required process time before continuing.";
   } else if (!isChecklistComplete()) {
     requirementNote.textContent = "Confirm all checklist items to continue.";
   } else {
@@ -975,7 +975,7 @@ function renderProcessLog() {
     processLogList.innerHTML = processLog.map(entry => `
       <li>
         <strong>Step ${entry.stepNumber}: ${entry.title}</strong>
-        <span>${entry.time}${entry.timerUsed ? " · timer used" : ""}${entry.materialVerified ? " · material verified" : ""}</span>
+        <span>${entry.time}${entry.timerUsed ? " · process time completed" : ""}${entry.materialVerified ? " · material verified" : ""}</span>
       </li>
     `).join("");
   }
@@ -1015,7 +1015,7 @@ function showCompletionSummary() {
   completionLogList.innerHTML = processLog.map(entry => `
     <li>
       Step ${entry.stepNumber}: ${entry.title}
-      <span>${entry.time}${entry.timerUsed ? " · timer used" : ""}${entry.materialVerified ? " · material verified" : ""}</span>
+      <span>${entry.time}${entry.timerUsed ? " · process time completed" : ""}${entry.materialVerified ? " · material verified" : ""}</span>
     </li>
   `).join("");
 
@@ -1070,7 +1070,7 @@ function downloadProcessReport() {
   const stepLines = processLog.length === 0
     ? "No steps documented"
     : processLog.map(entry =>
-        `Step ${entry.stepNumber}: ${entry.title} | ${entry.time}${entry.timerUsed ? " | timer used" : ""}${entry.materialVerified ? " | material verified" : ""}`
+        `Step ${entry.stepNumber}: ${entry.title} | ${entry.time}${entry.timerUsed ? " | process time completed" : ""}${entry.materialVerified ? " | material verified" : ""}`
       ).join("\n");
 
   const report = `AR Pharmacy Process Report
@@ -1087,7 +1087,7 @@ Finished at: ${finishedAt.toLocaleString()}
 Summary:
 Completed steps: ${completedSteps.size} of ${steps.length}
 Material checks: ${materialVerifiedSteps.size}
-Timers used: ${timerUsedSteps.size}
+Required process times completed: ${timerUsedSteps.size}
 Reported issues: ${reportedIssues.length}
 Supervisor review: ${supervisorReview ? supervisorReview.status + " by " + (supervisorReview.reviewer_name || "Supervisor") : "Not reviewed"}
 
