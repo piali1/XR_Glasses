@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Batch Audit Timeline</title>
   <link rel="stylesheet" href="{{ asset('css/audit.css') }}" />
+  <link rel="stylesheet" href="{{ asset('css/staff-auth.css') }}" />
 </head>
 <body>
+@include('partials.staff-bar')
 
 @php
   $events = collect();

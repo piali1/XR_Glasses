@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Content Management</title>
   <link rel="stylesheet" href="{{ asset('css/admin-content.css') }}" />
+  <link rel="stylesheet" href="{{ asset('css/staff-auth.css') }}" />
 </head>
 <body>
+@include('partials.staff-bar')
 
 <div class="admin-page">
 

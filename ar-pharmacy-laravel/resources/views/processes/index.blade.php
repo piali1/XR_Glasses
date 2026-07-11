@@ -7,8 +7,10 @@
   <title>AR Pharmacy Process Assistant</title>
 
   <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+  <link rel="stylesheet" href="{{ asset('css/staff-auth.css') }}" />
 </head>
 <body>
+@include('partials.staff-bar')
 <a href="/admin/content" class="admin-floating-link">Admin Content</a>
 <a href="/audit/latest" class="audit-floating-link">Audit Timeline</a>
 

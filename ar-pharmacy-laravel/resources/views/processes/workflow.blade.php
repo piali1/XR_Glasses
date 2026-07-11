@@ -8,8 +8,10 @@
   <title>AR Workflow Assistant</title>
 
   <link rel="stylesheet" href="{{ asset('css/workflow.css') }}" />
+  <link rel="stylesheet" href="{{ asset('css/staff-auth.css') }}" />
 </head>
 <body>
+@include('partials.staff-bar')
 
   <div class="workflow-app">
 
@@ -269,5 +271,9 @@
   </div>
 
   <script src="{{ asset('js/workflow.js') }}"></script>
+<script>
+window.AUTHENTICATED_STAFF_ROLE = @json(session('staff.role'));
+window.AUTHENTICATED_STAFF_NAME = @json(session('staff.name'));
+</script>
 </body>
 </html>

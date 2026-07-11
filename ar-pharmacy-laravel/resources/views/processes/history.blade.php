@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Process History</title>
   <link rel="stylesheet" href="{{ asset('css/history.css') }}" />
+  <link rel="stylesheet" href="{{ asset('css/staff-auth.css') }}" />
 </head>
 <body>
+@include('partials.staff-bar')
   <main class="history-page">
     <div class="history-header">
       <div>

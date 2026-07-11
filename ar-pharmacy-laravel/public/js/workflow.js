@@ -254,15 +254,22 @@ function setupRoleMode() {
     return;
   }
 
-  const savedRole = localStorage.getItem("xr_pharmacy_role") || "pta";
+  const authenticatedRole = window.AUTHENTICATED_STAFF_ROLE || null;
+  const savedRole = authenticatedRole || localStorage.getItem("xr_pharmacy_role") || "pta";
+
   userRoleSelect.value = savedRole;
   updateRoleMode(savedRole);
 
-  userRoleSelect.addEventListener("change", () => {
-    const selectedRole = userRoleSelect.value;
-    localStorage.setItem("xr_pharmacy_role", selectedRole);
-    updateRoleMode(selectedRole);
-  });
+  if (authenticatedRole) {
+    userRoleSelect.disabled = true;
+    userRoleSelect.title = "Role is controlled by the pharmacy staff login session.";
+  } else {
+    userRoleSelect.addEventListener("change", () => {
+      const selectedRole = userRoleSelect.value;
+      localStorage.setItem("xr_pharmacy_role", selectedRole);
+      updateRoleMode(selectedRole);
+    });
+  }
 }
 
 function updateRoleMode(role) {

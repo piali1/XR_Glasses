@@ -7,8 +7,10 @@
   <title>XR Pharmacy Hub</title>
 
   <link rel="stylesheet" href="{{ asset('css/hub.css') }}" />
+  <link rel="stylesheet" href="{{ asset('css/staff-auth.css') }}" />
 </head>
 <body>
+@include('partials.staff-bar')
 
   <div class="hub-page">
 

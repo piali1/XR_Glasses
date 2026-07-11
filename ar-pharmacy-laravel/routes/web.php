@@ -2,12 +2,37 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProcessApiController;
+use App\Http\Controllers\DemoAuthController;
+
+
+if (! function_exists('require_demo_staff')) {
+    function require_demo_staff(array $roles = [])
+    {
+        $staff = session('staff');
+
+        if (! $staff) {
+            return redirect()->guest('/login')->with('error', 'Please sign in as pharmacy staff first.');
+        }
+
+        if ($roles && ! in_array($staff['role'], $roles, true)) {
+            return redirect('/login')->with('error', 'This area requires one of these roles: ' . implode(', ', $roles) . '.');
+        }
+
+        return null;
+    }
+}
+
+
+Route::get('/login', [DemoAuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [DemoAuthController::class, 'login'])->name('login.submit');
+Route::post('/logout', [DemoAuthController::class, 'logout'])->name('logout');
 
 Route::get('/', function () {
     return view('processes.index');
 });
 
 Route::get('/workflow', function () {
+    if ($guard = require_demo_staff(['pta', 'pharmacist', 'supervisor', 'admin'])) { return $guard; }
     return view('processes.workflow');
 });
 
@@ -30,6 +55,8 @@ Route::get('/hub', function () {
 
 
 Route::get('/admin/content', function () {
+    if ($guard = require_demo_staff(['admin'])) { return $guard; }
+
     $contentItems = \App\Models\ContentItem::query()
         ->orderBy('type')
         ->orderBy('process')
@@ -43,6 +70,8 @@ Route::get('/admin/content', function () {
 });
 
 Route::post('/admin/content', function (\Illuminate\Http\Request $request) {
+    if ($guard = require_demo_staff(['admin'])) { return $guard; }
+
     $validated = $request->validate([
         'type' => ['required', 'string', 'max:255'],
         'title' => ['required', 'string', 'max:255'],
@@ -68,6 +97,8 @@ Route::post('/admin/content', function (\Illuminate\Http\Request $request) {
 });
 
 Route::post('/admin/content/{contentItem}/status', function (\Illuminate\Http\Request $request, \App\Models\ContentItem $contentItem) {
+    if ($guard = require_demo_staff(['admin'])) { return $guard; }
+
     $validated = $request->validate([
         'approval_status' => ['required', 'string', 'max:255'],
     ]);
@@ -80,6 +111,8 @@ Route::post('/admin/content/{contentItem}/status', function (\Illuminate\Http\Re
 });
 
 Route::get('/audit/latest', function () {
+    if ($guard = require_demo_staff(['pharmacist', 'supervisor', 'admin'])) { return $guard; }
+
     $batch = \App\Models\Batch::latest()->first();
 
     if (!$batch) {
@@ -90,6 +123,8 @@ Route::get('/audit/latest', function () {
 });
 
 Route::get('/audit/{batch}', function (\App\Models\Batch $batch) {
+    if ($guard = require_demo_staff(['pharmacist', 'supervisor', 'admin'])) { return $guard; }
+
     $batch->load(['recipeTemplate', 'scans', 'logs', 'issues', 'supervisorReview']);
 
     return view('processes.audit', [
