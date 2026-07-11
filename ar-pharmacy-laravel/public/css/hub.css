@@ -207,3 +207,166 @@ th {
     font-size: 34px;
   }
 }
+
+
+/* Staff role access panel */
+
+.staff-role-access-panel {
+  margin: 28px 0;
+  padding: 28px;
+  border-radius: 28px;
+  background: #ffffff;
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.1);
+  display: grid;
+  gap: 22px;
+}
+
+.role-access-main h2 {
+  margin: 0 0 12px;
+  font-size: 32px;
+  color: #0f172a;
+  letter-spacing: -0.04em;
+}
+
+.role-eyebrow {
+  margin: 0 0 8px;
+  color: #2563eb;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+}
+
+.role-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.role-meta span,
+.permission-box li,
+.access-matrix div {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 10px 13px;
+  font-weight: 800;
+  color: #475569;
+}
+
+.role-badge {
+  color: #1d4ed8 !important;
+  background: #dbeafe !important;
+  border-color: #bfdbfe !important;
+}
+
+.role-badge.pharmacist {
+  color: #166534 !important;
+  background: #dcfce7 !important;
+  border-color: #bbf7d0 !important;
+}
+
+.role-badge.supervisor {
+  color: #92400e !important;
+  background: #fef3c7 !important;
+  border-color: #fde68a !important;
+}
+
+.role-badge.admin {
+  color: #991b1b !important;
+  background: #fee2e2 !important;
+  border-color: #fecaca !important;
+}
+
+.permission-box {
+  background: #f8fafc;
+  border-radius: 22px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.permission-box h3 {
+  margin: 0 0 14px;
+  color: #0f172a;
+}
+
+.permission-box ul {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.access-matrix {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.access-matrix div {
+  border-radius: 18px;
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+}
+
+.access-matrix strong {
+  color: #0f172a;
+}
+
+.access-matrix span {
+  font-size: 13px;
+}
+
+.access-matrix .allowed {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.access-matrix .allowed span {
+  color: #166534;
+  font-weight: 900;
+}
+
+.access-matrix .locked {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.access-matrix .locked span {
+  color: #9a3412;
+  font-weight: 900;
+}
+
+.locked-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff7ed;
+  color: #9a3412;
+  border: 1px solid #fed7aa;
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-weight: 900;
+}
+
+.login-cta {
+  display: inline-flex;
+  width: fit-content;
+  text-decoration: none;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 900;
+}
+
+@media (max-width: 850px) {
+  .access-matrix {
+    grid-template-columns: 1fr;
+  }
+}

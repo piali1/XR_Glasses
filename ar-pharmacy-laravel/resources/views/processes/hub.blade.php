@@ -27,10 +27,79 @@
         <a href="/">Back to process selection</a>
         <a href="/workflow?process=ointment&batchId=OIN-DEMO-001&operator=Demo%20Operator&workstation=Lab%20Workstation%201">Open AR workflow</a>
         <a href="/history">Open process history</a>
+      @if(session('staff.role') === 'admin')
       <a href="/admin/content">Admin content management</a>
+    @else
+      <span class="locked-action">Admin content locked · Admin only</span>
+    @endif
       <a href="/audit/latest">Latest audit timeline</a>
       </div>
     </header>
+
+  <section class="staff-role-access-panel">
+    @php
+      $staff = session('staff');
+      $role = $staff['role'] ?? 'guest';
+
+      $access = [
+        'workflow' => in_array($role, ['pta', 'pharmacist', 'supervisor', 'admin'], true),
+        'audit' => in_array($role, ['pharmacist', 'supervisor', 'admin'], true),
+        'history' => in_array($role, ['supervisor', 'admin'], true),
+        'admin' => $role === 'admin',
+      ];
+    @endphp
+
+    @if($staff)
+      <div class="role-access-main">
+        <p class="role-eyebrow">Authenticated pharmacy staff</p>
+        <h2>{{ $staff['name'] }}</h2>
+        <div class="role-meta">
+          <span class="role-badge {{ $role }}">{{ $staff['role_label'] }}</span>
+          <span>{{ $staff['department'] }}</span>
+          <span>Signed in at {{ $staff['signed_in_at'] ?? 'current session' }}</span>
+        </div>
+      </div>
+
+      <div class="permission-box">
+        <h3>Current permissions</h3>
+        <ul>
+          @foreach($staff['permissions'] ?? [] as $permission)
+            <li>{{ $permission }}</li>
+          @endforeach
+        </ul>
+      </div>
+
+      <div class="access-matrix">
+        <div class="{{ $access['workflow'] ? 'allowed' : 'locked' }}">
+          <strong>Workflow</strong>
+          <span>{{ $access['workflow'] ? 'Allowed' : 'Locked' }}</span>
+        </div>
+
+        <div class="{{ $access['audit'] ? 'allowed' : 'locked' }}">
+          <strong>Audit timeline</strong>
+          <span>{{ $access['audit'] ? 'Allowed' : 'Locked' }}</span>
+        </div>
+
+        <div class="{{ $access['history'] ? 'allowed' : 'locked' }}">
+          <strong>Batch history</strong>
+          <span>{{ $access['history'] ? 'Allowed' : 'Limited' }}</span>
+        </div>
+
+        <div class="{{ $access['admin'] ? 'allowed' : 'locked' }}">
+          <strong>Content admin</strong>
+          <span>{{ $access['admin'] ? 'Allowed' : 'Admin only' }}</span>
+        </div>
+      </div>
+    @else
+      <div class="role-access-main">
+        <p class="role-eyebrow">Not signed in</p>
+        <h2>Guest access</h2>
+        <p>Please sign in as pharmacy staff to access role-specific functions.</p>
+        <a href="/login" class="login-cta">Open staff login</a>
+      </div>
+    @endif
+  </section>
+
 
     <main class="hub-grid">
 
