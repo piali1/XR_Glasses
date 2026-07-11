@@ -41,6 +41,20 @@
           </div>
         </div>
 
+        
+        <div class="role-mode-box">
+          <label>
+            Current role
+            <select id="userRoleSelect">
+              <option value="pta">PTA</option>
+              <option value="pharmacist">Pharmacist</option>
+              <option value="supervisor">Supervisor</option>
+              <option value="admin">Admin</option>
+            </select>
+          </label>
+          <p id="rolePermissionText">Role permissions will be displayed here.</p>
+        </div>
+
         <a href="/" class="exit-button">Exit</a>
       </header>
 

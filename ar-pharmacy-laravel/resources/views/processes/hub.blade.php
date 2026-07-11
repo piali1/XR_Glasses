@@ -25,6 +25,8 @@
         <a href="/">Back to process selection</a>
         <a href="/workflow?process=ointment&batchId=OIN-DEMO-001&operator=Demo%20Operator&workstation=Lab%20Workstation%201">Open AR workflow</a>
         <a href="/history">Open process history</a>
+      <a href="/admin/content">Admin content management</a>
+      <a href="/audit/latest">Latest audit timeline</a>
       </div>
     </header>
 

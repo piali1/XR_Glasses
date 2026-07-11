@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
 </head>
 <body>
+<a href="/admin/content" class="admin-floating-link">Admin Content</a>
+<a href="/audit/latest" class="audit-floating-link">Audit Timeline</a>
+
 
 <a href="/hub" class="hub-floating-link">XR Hub</a>
 <a href="/history" class="history-floating-link">Process History</a>

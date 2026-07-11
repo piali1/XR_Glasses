@@ -32,6 +32,8 @@ const materialResult = document.getElementById("materialResult");
 const qrScannerBox = document.getElementById("qrScannerBox");
 const qrScannerStatus = document.getElementById("qrScannerStatus");
 const qrFileInput = document.getElementById("qrFileInput");
+const userRoleSelect = document.getElementById("userRoleSelect");
+const rolePermissionText = document.getElementById("rolePermissionText");
 const relatedContentItems = document.getElementById("relatedContentItems");
 const contentContextStatus = document.getElementById("contentContextStatus");
 
@@ -237,6 +239,35 @@ function renderRelatedContentItems(items) {
       </small>
     </article>
   `).join("");
+}
+
+
+const rolePermissions = {
+  pta: "PTA permissions: run workflows, scan materials, complete checklists and report issues.",
+  pharmacist: "Pharmacist permissions: review process data, verify preparation quality and approve workflows.",
+  supervisor: "Supervisor permissions: approve or reject documented batches and review QM evidence.",
+  admin: "Admin permissions: maintain content templates, SOP metadata and system configuration."
+};
+
+function setupRoleMode() {
+  if (!userRoleSelect || !rolePermissionText) {
+    return;
+  }
+
+  const savedRole = localStorage.getItem("xr_pharmacy_role") || "pta";
+  userRoleSelect.value = savedRole;
+  updateRoleMode(savedRole);
+
+  userRoleSelect.addEventListener("change", () => {
+    const selectedRole = userRoleSelect.value;
+    localStorage.setItem("xr_pharmacy_role", selectedRole);
+    updateRoleMode(selectedRole);
+  });
+}
+
+function updateRoleMode(role) {
+  document.body.dataset.role = role;
+  rolePermissionText.textContent = rolePermissions[role] || rolePermissions.pta;
 }
 
 const processNames = {
@@ -1214,5 +1245,6 @@ window.restartProcess = restartProcess;
 window.downloadProcessReport = downloadProcessReport;
 window.submitSupervisorReview = submitSupervisorReview;
 
+setupRoleMode();
 startCamera();
 initializeWorkflow();
