@@ -404,3 +404,130 @@ button:hover,
   box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
   border: 1px solid rgba(37, 99, 235, 0.18);
 }
+
+
+/* Hide old floating navigation because staff bar replaces it */
+
+.history-floating-link,
+.hub-floating-link,
+.admin-floating-link,
+.audit-floating-link {
+  display: none !important;
+}
+
+/* Process role access panel */
+
+.process-role-access-panel {
+  max-width: 1180px;
+  margin: 28px auto 34px;
+  padding: 28px;
+  border-radius: 28px;
+  background: #ffffff;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.1);
+}
+
+.process-role-eyebrow {
+  margin: 0 0 8px;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.process-role-main h2 {
+  margin: 0 0 10px;
+  color: #0f172a;
+  font-size: 32px;
+  letter-spacing: -0.04em;
+}
+
+.process-role-main p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.55;
+  font-weight: 700;
+}
+
+.process-permission-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.process-permission-list span {
+  display: inline-flex;
+  padding: 10px 13px;
+  border-radius: 999px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  color: #075985;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.process-access-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.process-access-grid div {
+  padding: 18px;
+  border-radius: 20px;
+  display: grid;
+  gap: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.process-access-grid strong {
+  color: #0f172a;
+}
+
+.process-access-grid span {
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.process-access-grid .allowed {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.process-access-grid .allowed span {
+  color: #166534;
+}
+
+.process-access-grid .locked {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.process-access-grid .locked span {
+  color: #9a3412;
+}
+
+.process-login-button {
+  display: inline-flex;
+  margin-top: 18px;
+  text-decoration: none;
+  background: #2563eb;
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+@media (max-width: 850px) {
+  .process-role-access-panel {
+    margin-left: 18px;
+    margin-right: 18px;
+  }
+
+  .process-access-grid {
+    grid-template-columns: 1fr;
+  }
+}

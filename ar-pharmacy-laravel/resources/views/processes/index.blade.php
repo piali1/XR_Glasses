@@ -11,15 +11,7 @@
 </head>
 <body>
 @include('partials.staff-bar')
-<a href="/admin/content" class="admin-floating-link">Admin Content</a>
-<a href="/audit/latest" class="audit-floating-link">Audit Timeline</a>
-
-
-<a href="/hub" class="hub-floating-link">XR Hub</a>
-<a href="/history" class="history-floating-link">Process History</a>
-
-
-  <div class="page">
+<div class="page">
 
     <header class="header">
       <p class="eyebrow">Prototype</p>
@@ -28,6 +20,60 @@
         Select a sample pharmacy preparation process to start the AR-like workflow guidance.
       </p>
     </header>
+
+<section class="process-role-access-panel">
+  @php
+    $staff = session('staff');
+    $role = $staff['role'] ?? 'guest';
+
+    $access = [
+      'workflow' => in_array($role, ['pta', 'pharmacist', 'supervisor', 'admin'], true),
+      'audit' => in_array($role, ['pharmacist', 'supervisor', 'admin'], true),
+      'admin' => $role === 'admin',
+    ];
+  @endphp
+
+  @if($staff)
+    <div class="process-role-main">
+      <p class="process-role-eyebrow">Authenticated pharmacy staff session</p>
+      <h2>Signed in as {{ $staff['role_label'] }}</h2>
+      <p>
+        {{ $staff['name'] }} · {{ $staff['department'] }} · Session-based role access active
+      </p>
+    </div>
+
+    <div class="process-permission-list">
+      @foreach($staff['permissions'] ?? [] as $permission)
+        <span>{{ $permission }}</span>
+      @endforeach
+    </div>
+
+    <div class="process-access-grid">
+      <div class="{{ $access['workflow'] ? 'allowed' : 'locked' }}">
+        <strong>Workflow execution</strong>
+        <span>{{ $access['workflow'] ? 'Allowed' : 'Locked' }}</span>
+      </div>
+
+      <div class="{{ $access['audit'] ? 'allowed' : 'locked' }}">
+        <strong>Audit evidence</strong>
+        <span>{{ $access['audit'] ? 'Allowed' : 'Pharmacist / Supervisor only' }}</span>
+      </div>
+
+      <div class="{{ $access['admin'] ? 'allowed' : 'locked' }}">
+        <strong>Content administration</strong>
+        <span>{{ $access['admin'] ? 'Allowed' : 'Admin only' }}</span>
+      </div>
+    </div>
+  @else
+    <div class="process-role-main">
+      <p class="process-role-eyebrow">Guest mode</p>
+      <h2>No pharmacy staff session active</h2>
+      <p>Please sign in to activate role-based access for PTA, Pharmacist, Supervisor or Admin.</p>
+      <a href="/login" class="process-login-button">Open pharmacy staff login</a>
+    </div>
+  @endif
+</section>
+
 
     
     <section class="demo-feature-strip">
