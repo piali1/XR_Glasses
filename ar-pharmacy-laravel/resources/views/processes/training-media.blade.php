@@ -10,14 +10,19 @@
 <body>
 @include('partials.staff-bar')
 
+@php
+  $localVideoPath = 'media/training/preparation-setup-demo.mp4';
+  $hasLocalVideo = file_exists(public_path($localVideoPath));
+@endphp
+
 <main class="training-page">
 
   <header class="training-hero">
     <p class="training-eyebrow">XR Pharmacy Training Media</p>
     <h1>Preparation Setup Training</h1>
     <p>
-      This training placeholder demonstrates how short video-based learning content
-      can be linked directly to a workflow step in the XR Pharmacy Hub.
+      This training module demonstrates how video-based learning content can be linked
+      directly to a workflow step in the XR Pharmacy Hub.
     </p>
 
     <div class="training-actions">
@@ -30,13 +35,20 @@
   <section class="video-layout">
 
     <article class="video-card">
-      <div class="video-placeholder">
-        <div class="play-button">▶</div>
-        <div>
-          <strong>Training video placeholder</strong>
-          <span>Preparation setup before ointment workflow</span>
+      @if($hasLocalVideo)
+        <video class="training-video-player" controls preload="metadata">
+          <source src="{{ asset($localVideoPath) }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      @else
+        <div class="video-placeholder">
+          <div class="play-button">▶</div>
+          <div>
+            <strong>Training video placeholder</strong>
+            <span>No local MP4 file connected yet</span>
+          </div>
         </div>
-      </div>
+      @endif
 
       <div class="video-meta">
         <span>Duration: 02:30 min</span>
@@ -44,6 +56,16 @@
         <span>Status: Approved training template</span>
         <span>Version: v1.0</span>
       </div>
+
+      @unless($hasLocalVideo)
+        <div class="video-upload-note">
+          <strong>How to connect a real video</strong>
+          <p>
+            Add an MP4 file named <code>preparation-setup-demo.mp4</code> to:
+          </p>
+          <pre>public/media/training/preparation-setup-demo.mp4</pre>
+        </div>
+      @endunless
     </article>
 
     <aside class="training-side-card">
