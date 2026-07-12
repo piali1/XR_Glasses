@@ -116,6 +116,13 @@ Route::post('/admin/content/{contentItem}/status', function (\Illuminate\Http\Re
 });
 
 
+
+Route::get('/training-media/preparation-setup', function () {
+    if ($guard = require_demo_staff(['pta', 'pharmacist', 'supervisor', 'admin'])) { return $guard; }
+
+    return view('processes.training-media');
+});
+
 Route::get('/pharmacist/release/latest', function () {
     if ($guard = require_demo_staff(['pharmacist', 'supervisor', 'admin'])) { return $guard; }
 
