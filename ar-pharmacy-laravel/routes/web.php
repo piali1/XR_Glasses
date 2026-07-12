@@ -233,6 +233,73 @@ Route::post('/pharmacist/release/{batch}', function (\Illuminate\Http\Request $r
         ->with('status', 'Pharmacist release decision saved.');
 });
 
+
+Route::get('/admin/content/{contentItem}/edit', function (\App\Models\ContentItem $contentItem) {
+    if ($guard = require_demo_staff(['admin'])) { return $guard; }
+
+    return view('processes.admin-content-edit', [
+        'contentItem' => $contentItem,
+    ]);
+});
+
+Route::post('/admin/content/{contentItem}/update', function (\Illuminate\Http\Request $request, \App\Models\ContentItem $contentItem) {
+    if ($guard = require_demo_staff(['admin'])) { return $guard; }
+
+    $validated = $request->validate([
+        'type' => ['required', 'string', 'max:255'],
+        'title' => ['required', 'string', 'max:255'],
+        'version' => ['nullable', 'string', 'max:255'],
+        'valid_from' => ['nullable', 'date'],
+        'valid_until' => ['nullable', 'date'],
+        'area' => ['nullable', 'string', 'max:255'],
+        'responsible_role' => ['nullable', 'string', 'max:255'],
+        'approval_status' => ['nullable', 'string', 'max:255'],
+        'process' => ['nullable', 'string', 'max:255'],
+        'step_number' => ['nullable', 'integer', 'min:1'],
+        'display_context' => ['nullable', 'string', 'max:255'],
+        'content' => ['required', 'string'],
+    ]);
+
+    $validated['version'] = $validated['version'] ?? 'v1.0';
+    $validated['approval_status'] = $validated['approval_status'] ?? 'draft';
+    $validated['display_context'] = $validated['display_context'] ?? 'workflow';
+
+    $contentItem->update($validated);
+
+    return redirect('/admin/content')->with('status', 'Content item updated.');
+});
+
+Route::post('/admin/content/{contentItem}/archive', function (\App\Models\ContentItem $contentItem) {
+    if ($guard = require_demo_staff(['admin'])) { return $guard; }
+
+    $contentItem->update([
+        'approval_status' => 'archived',
+    ]);
+
+    return redirect('/admin/content')->with('status', 'Content item archived.');
+});
+
+Route::post('/admin/content/{contentItem}/duplicate', function (\App\Models\ContentItem $contentItem) {
+    if ($guard = require_demo_staff(['admin'])) { return $guard; }
+
+    $currentVersion = $contentItem->version ?: 'v1.0';
+    $newVersion = $currentVersion . ' copy';
+
+    if (preg_match('/^v?(\d+)\.(\d+)$/i', $currentVersion, $matches)) {
+        $major = (int) $matches[1];
+        $minor = (int) $matches[2] + 1;
+        $newVersion = 'v' . $major . '.' . $minor;
+    }
+
+    $copy = $contentItem->replicate();
+    $copy->title = $contentItem->title . ' - new version';
+    $copy->version = $newVersion;
+    $copy->approval_status = 'draft';
+    $copy->save();
+
+    return redirect('/admin/content')->with('status', 'New draft version created.');
+});
+
 Route::get('/audit/latest', function () {
     if ($guard = require_demo_staff(['pharmacist', 'supervisor', 'admin'])) { return $guard; }
 

@@ -145,7 +145,7 @@
             </div>
           </div>
 
-          <form method="POST" action="/admin/content/{{ $item->id }}/status" class="status-form">
+          <div class="content-row-actions">\n          <form method="POST" action="/admin/content/{{ $item->id }}/status" class="status-form">
             @csrf
             <label>
               Status
@@ -158,6 +158,21 @@
             </label>
             <button type="submit">Update status</button>
           </form>
+
+          <div class="content-actions">
+            <a href="/admin/content/{{ $item->id }}/edit" class="edit-link">Edit content item</a>
+
+            <form method="POST" action="/admin/content/{{ $item->id }}/duplicate">
+              @csrf
+              <button type="submit" class="duplicate-button">Duplicate version</button>
+            </form>
+
+            <form method="POST" action="/admin/content/{{ $item->id }}/archive">
+              @csrf
+              <button type="submit" class="archive-button">Archive</button>
+            </form>
+          </div>
+          </div>
         </article>
       @endforeach
     </div>
