@@ -234,3 +234,30 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Training media admin preview */
+
+.admin-media-preview {
+  margin-top: 14px;
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+}
+
+.admin-media-preview strong {
+  color: #3730a3;
+}
+
+.admin-media-preview span {
+  color: #0f172a;
+  font-weight: 900;
+}
+
+.admin-media-preview small {
+  color: #475569;
+  word-break: break-word;
+}

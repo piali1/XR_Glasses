@@ -116,6 +116,27 @@
         </select>
       </label>
 
+
+      <label>
+        Media type
+        <select name="media_type">
+          <option value="">No media</option>
+          <option value="video_placeholder">Training video placeholder</option>
+          <option value="embedded_video">Embedded training video</option>
+          <option value="external_video">External video URL</option>
+        </select>
+      </label>
+
+      <label>
+        Media title
+        <input name="media_title" placeholder="e.g. Ointment mixing training video" />
+      </label>
+
+      <label>
+        Video URL
+        <input name="media_url" placeholder="https://example.com/training-video" />
+      </label>
+
       <label class="wide">
         Content
         <textarea name="content" required placeholder="Describe the SOP, training note, checklist or QM evidence."></textarea>
@@ -143,6 +164,14 @@
               <span>Responsible: {{ $item->responsible_role ?? 'not specified' }}</span>
               <span>Context: {{ $item->process ?? 'global' }}{{ $item->step_number ? ' · step ' . $item->step_number : '' }}</span>
             </div>
+
+            @if($item->media_url || $item->media_type)
+              <div class="admin-media-preview">
+                <strong>Training media</strong>
+                <span>{{ $item->media_title ?? 'Training video placeholder' }}</span>
+                <small>{{ $item->media_type ?? 'media' }}{{ $item->media_url ? ' · ' . $item->media_url : ' · no URL connected' }}</small>
+              </div>
+            @endif
           </div>
 
           <div class="content-row-actions">\n          <form method="POST" action="/admin/content/{{ $item->id }}/status" class="status-form">

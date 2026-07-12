@@ -211,6 +211,32 @@ async function loadRelatedContentForStep() {
   }
 }
 
+
+function renderTrainingMedia(item) {
+  const mediaType = String(item.media_type || "").toLowerCase();
+  const mediaUrl = item.media_url || "";
+  const mediaTitle = item.media_title || "Training video placeholder";
+
+  if (!mediaType && !mediaUrl) {
+    return "";
+  }
+
+  const link = mediaUrl
+    ? `<a href="${escapeHtml(mediaUrl)}" target="_blank" rel="noopener noreferrer">Open training video</a>`
+    : `<span>Video placeholder configured, no external URL connected.</span>`;
+
+  return `
+    <div class="training-media-card">
+      <div class="training-media-icon">▶</div>
+      <div>
+        <strong>${escapeHtml(mediaTitle)}</strong>
+        <p>${escapeHtml(mediaType || "training media")}</p>
+        ${link}
+      </div>
+    </div>
+  `;
+}
+
 function renderRelatedContentItems(items) {
   if (!relatedContentItems || !contentContextStatus) {
     return;
@@ -231,6 +257,7 @@ function renderRelatedContentItems(items) {
         <strong>${escapeHtml(item.title)}</strong>
       </div>
       <p>${escapeHtml(item.content)}</p>
+      ${renderTrainingMedia(item)}
       <small>
         Version ${escapeHtml(item.version)}
         · ${escapeHtml(item.area || "General")}

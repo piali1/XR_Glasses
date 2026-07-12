@@ -1058,3 +1058,48 @@ button:hover {
   font-size: 13px;
   line-height: 1.45;
 }
+
+
+/* Training media card */
+
+.training-media-card {
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(29, 78, 216, 0.18);
+  border: 1px solid rgba(147, 197, 253, 0.32);
+}
+
+.training-media-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(37, 99, 235, 0.9);
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.training-media-card strong {
+  display: block;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.training-media-card p {
+  margin: 0 0 6px;
+  color: #bfdbfe;
+  font-size: 13px;
+}
+
+.training-media-card a,
+.training-media-card span {
+  color: #dbeafe;
+  font-weight: 900;
+  font-size: 13px;
+}

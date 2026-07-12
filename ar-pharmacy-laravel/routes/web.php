@@ -86,6 +86,9 @@ Route::post('/admin/content', function (\Illuminate\Http\Request $request) {
         'process' => ['nullable', 'string', 'max:255'],
         'step_number' => ['nullable', 'integer', 'min:1'],
         'display_context' => ['nullable', 'string', 'max:255'],
+        'media_type' => ['nullable', 'string', 'max:255'],
+        'media_title' => ['nullable', 'string', 'max:255'],
+        'media_url' => ['nullable', 'string', 'max:2048'],
         'content' => ['required', 'string'],
     ]);
 
@@ -257,6 +260,9 @@ Route::post('/admin/content/{contentItem}/update', function (\Illuminate\Http\Re
         'process' => ['nullable', 'string', 'max:255'],
         'step_number' => ['nullable', 'integer', 'min:1'],
         'display_context' => ['nullable', 'string', 'max:255'],
+        'media_type' => ['nullable', 'string', 'max:255'],
+        'media_title' => ['nullable', 'string', 'max:255'],
+        'media_url' => ['nullable', 'string', 'max:2048'],
         'content' => ['required', 'string'],
     ]);
 

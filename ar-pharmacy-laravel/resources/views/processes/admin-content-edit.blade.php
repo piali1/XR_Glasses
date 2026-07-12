@@ -113,6 +113,27 @@
         </select>
       </label>
 
+
+      <label>
+        Media type
+        <select name="media_type">
+          <option value="" @selected($contentItem->media_type === null)>No media</option>
+          <option value="video_placeholder" @selected($contentItem->media_type === 'video_placeholder')>Training video placeholder</option>
+          <option value="embedded_video" @selected($contentItem->media_type === 'embedded_video')>Embedded training video</option>
+          <option value="external_video" @selected($contentItem->media_type === 'external_video')>External video URL</option>
+        </select>
+      </label>
+
+      <label>
+        Media title
+        <input name="media_title" value="{{ old('media_title', $contentItem->media_title) }}" placeholder="e.g. Ointment mixing training video" />
+      </label>
+
+      <label>
+        Video URL
+        <input name="media_url" value="{{ old('media_url', $contentItem->media_url) }}" placeholder="https://example.com/training-video" />
+      </label>
+
       <label class="wide">
         Content
         <textarea name="content" required>{{ old('content', $contentItem->content) }}</textarea>

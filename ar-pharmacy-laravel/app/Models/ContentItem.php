@@ -22,6 +22,9 @@ class ContentItem extends Model
         'step_number',
         'display_context',
         'content',
+        'media_type',
+        'media_title',
+        'media_url',
     ];
 
     protected $casts = [
