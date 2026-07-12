@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\PharmacistRelease;
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProcessApiController;
 use App\Http\Controllers\DemoAuthController;
@@ -108,6 +110,127 @@ Route::post('/admin/content/{contentItem}/status', function (\Illuminate\Http\Re
     ]);
 
     return redirect('/admin/content')->with('status', 'Content item status updated.');
+});
+
+
+Route::get('/pharmacist/release/latest', function () {
+    if ($guard = require_demo_staff(['pharmacist', 'supervisor', 'admin'])) { return $guard; }
+
+    $batch = \App\Models\Batch::latest()->first();
+
+    if (! $batch) {
+        return redirect('/history')->with('error', 'No batch available for pharmacist release.');
+    }
+
+    return redirect('/pharmacist/release/' . $batch->id);
+});
+
+Route::get('/pharmacist/release/{batch}', function (\App\Models\Batch $batch) {
+    if ($guard = require_demo_staff(['pharmacist', 'supervisor', 'admin'])) { return $guard; }
+
+    $batch->load(['recipeTemplate', 'scans', 'logs', 'issues', 'supervisorReview']);
+
+    $contentItems = \App\Models\ContentItem::query()
+        ->where(function ($query) use ($batch) {
+            $query->whereNull('process')
+                ->orWhere('process', $batch->process);
+        })
+        ->orderBy('step_number')
+        ->orderBy('type')
+        ->orderBy('title')
+        ->get();
+
+    $release = PharmacistRelease::query()
+        ->where('batch_id', $batch->id)
+        ->latest()
+        ->first();
+
+    return view('processes.pharmacist-release', [
+        'batch' => $batch,
+        'contentItems' => $contentItems,
+        'release' => $release,
+    ]);
+});
+
+Route::post('/pharmacist/release/{batch}', function (\Illuminate\Http\Request $request, \App\Models\Batch $batch) {
+    if ($guard = require_demo_staff(['pharmacist', 'supervisor', 'admin'])) { return $guard; }
+
+    $validated = $request->validate([
+        'decision' => ['required', 'string', 'in:released,rejected,correction_requested'],
+        'comment' => ['nullable', 'string', 'max:3000'],
+    ]);
+
+    $batch->load(['scans', 'logs', 'issues']);
+
+    $invalidScans = $batch->scans->where('is_valid', false)->count();
+    $validScans = $batch->scans->where('is_valid', true)->count();
+    $issueCount = $batch->issues->count();
+    $documentedSteps = $batch->logs->count();
+
+    $riskLevel = 'low';
+
+    if ($invalidScans > 0 || $issueCount > 0) {
+        $riskLevel = 'high';
+    } elseif ($documentedSteps < 3 || $validScans < 3) {
+        $riskLevel = 'medium';
+    }
+
+    $contentItems = \App\Models\ContentItem::query()
+        ->where(function ($query) use ($batch) {
+            $query->whereNull('process')
+                ->orWhere('process', $batch->process);
+        })
+        ->get();
+
+    $staff = session('staff');
+
+    PharmacistRelease::updateOrCreate(
+        ['batch_id' => $batch->id],
+        [
+            'reviewer_name' => $staff['name'] ?? 'Pharmacist',
+            'reviewer_role' => $staff['role'] ?? 'pharmacist',
+            'decision' => $validated['decision'],
+            'risk_level' => $riskLevel,
+            'material_summary' => [
+                'valid_scans' => $validScans,
+                'invalid_scans' => $invalidScans,
+                'total_scans' => $batch->scans->count(),
+            ],
+            'checklist_summary' => [
+                'documented_steps' => $documentedSteps,
+                'timer_confirmations' => $batch->logs->where('timer_used', true)->count(),
+                'materials_verified_steps' => $batch->logs->where('materials_verified', true)->count(),
+            ],
+            'issue_summary' => [
+                'reported_issues' => $issueCount,
+            ],
+            'content_version_summary' => $contentItems
+                ->map(fn ($item) => [
+                    'type' => $item->type,
+                    'title' => $item->title,
+                    'version' => $item->version,
+                    'valid_until' => optional($item->valid_until)->format('Y-m-d'),
+                    'approval_status' => $item->approval_status,
+                ])
+                ->values()
+                ->all(),
+            'comment' => $validated['comment'] ?? null,
+            'released_at' => now(),
+        ]
+    );
+
+    if ($validated['decision'] === 'released') {
+        $batch->status = 'pharmacist_released';
+    } elseif ($validated['decision'] === 'rejected') {
+        $batch->status = 'pharmacist_rejected';
+    } else {
+        $batch->status = 'correction_requested';
+    }
+
+    $batch->save();
+
+    return redirect('/pharmacist/release/' . $batch->id)
+        ->with('status', 'Pharmacist release decision saved.');
 });
 
 Route::get('/audit/latest', function () {

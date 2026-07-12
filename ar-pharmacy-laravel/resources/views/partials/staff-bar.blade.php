@@ -29,6 +29,7 @@
 
       @if($canAudit)
         <a href="/audit/latest">Audit</a>
+        <a href="/pharmacist/release/latest">Release</a>
       @endif
 
       @if($role === 'admin')

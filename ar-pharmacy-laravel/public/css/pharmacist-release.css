@@ -1,0 +1,292 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f1f5f9;
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.release-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 42px 24px 70px;
+}
+
+.release-hero,
+.batch-overview,
+.release-card,
+.decision-panel,
+.status-message {
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.release-hero {
+  padding: 34px;
+  margin-bottom: 24px;
+}
+
+.release-eyebrow {
+  margin: 0 0 10px;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.release-hero h1 {
+  margin: 0 0 14px;
+  font-size: clamp(38px, 6vw, 64px);
+  line-height: 0.95;
+  letter-spacing: -0.07em;
+}
+
+.release-hero p,
+.decision-panel p,
+.release-card p {
+  color: #475569;
+  line-height: 1.6;
+}
+
+.release-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.release-actions a {
+  text-decoration: none;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+.status-message {
+  margin-bottom: 24px;
+  padding: 18px 22px;
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  font-weight: 900;
+}
+
+.batch-overview {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.batch-overview div {
+  background: #f8fafc;
+  border-radius: 18px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.batch-overview strong {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.batch-overview span {
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.risk-card.low {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.risk-card.medium {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.risk-card.high {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.risk-card.low span {
+  color: #166534;
+}
+
+.risk-card.medium span {
+  color: #92400e;
+}
+
+.risk-card.high span {
+  color: #991b1b;
+}
+
+.release-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.release-card {
+  padding: 26px;
+}
+
+.release-card h2,
+.decision-panel h2 {
+  margin: 0 0 18px;
+  color: #0f172a;
+  letter-spacing: -0.04em;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.metric-grid div {
+  background: #f8fafc;
+  border-radius: 18px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.metric-grid strong {
+  display: block;
+  font-size: 28px;
+  color: #2563eb;
+}
+
+.metric-grid span {
+  color: #64748b;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.detail-list {
+  display: grid;
+  gap: 10px;
+}
+
+.detail-list div {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.detail-list div.ok {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.detail-list div.danger {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.detail-list strong {
+  color: #0f172a;
+}
+
+.detail-list span {
+  color: #475569;
+  line-height: 1.45;
+}
+
+.content-version-list {
+  max-height: 410px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.decision-panel {
+  margin-top: 24px;
+  padding: 30px;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 24px;
+}
+
+.decision-panel blockquote {
+  margin: 18px 0 0;
+  padding: 16px;
+  border-left: 4px solid #2563eb;
+  background: #f8fafc;
+  color: #334155;
+  border-radius: 14px;
+}
+
+.decision-form {
+  display: grid;
+  gap: 16px;
+}
+
+.decision-form label {
+  display: grid;
+  gap: 8px;
+  font-weight: 900;
+  color: #334155;
+}
+
+.decision-form textarea {
+  min-height: 150px;
+  border: 1px solid #cbd5e1;
+  border-radius: 18px;
+  padding: 14px;
+  font: inherit;
+}
+
+.decision-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.decision-buttons button {
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 18px;
+  color: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.release-button {
+  background: #16a34a;
+}
+
+.correction-button {
+  background: #f59e0b;
+}
+
+.reject-button {
+  background: #dc2626;
+}
+
+@media (max-width: 900px) {
+  .batch-overview,
+  .release-grid,
+  .decision-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+}
