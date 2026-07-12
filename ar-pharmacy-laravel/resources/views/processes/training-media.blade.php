@@ -11,8 +11,22 @@
 @include('partials.staff-bar')
 
 @php
-  $localVideoPath = 'media/training/preparation-setup-demo.mp4';
-  $hasLocalVideo = file_exists(public_path($localVideoPath));
+  $mp4VideoPath = 'media/training/preparation-setup-demo.mp4';
+  $movVideoPath = 'media/training/preparation-setup-demo.mov';
+
+  if (file_exists(public_path($mp4VideoPath))) {
+    $localVideoPath = $mp4VideoPath;
+    $localVideoType = 'video/mp4';
+    $hasLocalVideo = true;
+  } elseif (file_exists(public_path($movVideoPath))) {
+    $localVideoPath = $movVideoPath;
+    $localVideoType = 'video/quicktime';
+    $hasLocalVideo = true;
+  } else {
+    $localVideoPath = $mp4VideoPath;
+    $localVideoType = 'video/mp4';
+    $hasLocalVideo = false;
+  }
 @endphp
 
 <main class="training-page">
@@ -37,7 +51,7 @@
     <article class="video-card">
       @if($hasLocalVideo)
         <video class="training-video-player" controls preload="metadata">
-          <source src="{{ asset($localVideoPath) }}" type="video/mp4">
+          <source src="{{ asset($localVideoPath) }}" type="{{ $localVideoType }}">
           Your browser does not support the video tag.
         </video>
       @else
@@ -94,7 +108,9 @@
           <p>
             This demo uses an interactive training simulation. A real MP4 can still be connected by adding:
           </p>
-          <pre>public/media/training/preparation-setup-demo.mp4</pre>
+          <pre>public/media/training/preparation-setup-demo.mp4
+or
+public/media/training/preparation-setup-demo.mov</pre>
         </div>
       @endunless
     </article>
