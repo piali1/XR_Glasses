@@ -41,11 +41,42 @@
           Your browser does not support the video tag.
         </video>
       @else
-        <div class="video-placeholder">
-          <div class="play-button">▶</div>
-          <div>
-            <strong>Training video placeholder</strong>
-            <span>No local MP4 file connected yet</span>
+        <div class="training-simulation-player" id="trainingPlayer">
+          <div class="simulation-screen">
+            <div class="simulation-topline">
+              <span id="chapterBadge">Chapter 1 / 5</span>
+              <span id="playerTime">00:00 / 00:20</span>
+            </div>
+
+            <div class="simulation-stage">
+              <div class="xr-frame">
+                <span class="xr-label">XR overlay</span>
+                <h2 id="sceneTitle">Prescription and setup check</h2>
+                <p id="sceneText">
+                  Verify the prescription document and confirm that the preparation process matches the selected workflow.
+                </p>
+
+                <div class="scene-checks" id="sceneChecks">
+                  <span>Prescription document visible</span>
+                  <span>Workspace cleaned</span>
+                  <span>Preparation tray ready</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="simulation-caption" id="sceneCaption">
+              Training starts with the prescription document and workspace setup before material verification begins.
+            </div>
+
+            <div class="simulation-controls">
+              <button type="button" id="playTrainingButton">Play training</button>
+
+              <div class="progress-track">
+                <div id="trainingProgress" class="progress-fill"></div>
+              </div>
+
+              <button type="button" id="restartTrainingButton">Restart</button>
+            </div>
           </div>
         </div>
       @endif
@@ -59,9 +90,9 @@
 
       @unless($hasLocalVideo)
         <div class="video-upload-note">
-          <strong>How to connect a real video</strong>
+          <strong>Interactive training player active</strong>
           <p>
-            Add an MP4 file named <code>preparation-setup-demo.mp4</code> to:
+            This demo uses an interactive training simulation. A real MP4 can still be connected by adding:
           </p>
           <pre>public/media/training/preparation-setup-demo.mp4</pre>
         </div>
@@ -124,6 +155,115 @@
   </section>
 
 </main>
+
+<script>
+const chapters = [
+  {
+    title: "Prescription and setup check",
+    text: "Verify the prescription document and confirm that the preparation process matches the selected workflow.",
+    caption: "Training starts with the prescription document and workspace setup before material verification begins.",
+    checks: ["Prescription document visible", "Workflow selected", "Batch data prepared"]
+  },
+  {
+    title: "Workspace hygiene",
+    text: "Clean the preparation area and remove unrelated materials before starting compounding.",
+    caption: "A clean workspace reduces contamination risk and supports reproducible preparation quality.",
+    checks: ["Surface cleaned", "Only required tools present", "Waste removed"]
+  },
+  {
+    title: "Preparation tray check",
+    text: "Prepare all containers, tools and ingredients before scanning QR-coded materials.",
+    caption: "The XR overlay guides the user to verify that all required materials are ready.",
+    checks: ["Container ready", "Spatula ready", "Material tray ready"]
+  },
+  {
+    title: "QR material verification",
+    text: "Scan each QR code and continue only when the backend confirms that the material belongs to this workflow step.",
+    caption: "Wrong materials are blocked and documented as process issues.",
+    checks: ["QR scan active", "Backend validation", "Traceability stored"]
+  },
+  {
+    title: "Ready for workflow execution",
+    text: "After setup and material checks are complete, the PTA can continue with the guided preparation workflow.",
+    caption: "The pharmacist can later review the documented evidence before release.",
+    checks: ["Checklist complete", "Materials verified", "Ready for next step"]
+  }
+];
+
+let isPlaying = false;
+let currentSecond = 0;
+const duration = 20;
+let timer = null;
+
+const playButton = document.getElementById("playTrainingButton");
+const restartButton = document.getElementById("restartTrainingButton");
+const progress = document.getElementById("trainingProgress");
+const time = document.getElementById("playerTime");
+const title = document.getElementById("sceneTitle");
+const text = document.getElementById("sceneText");
+const caption = document.getElementById("sceneCaption");
+const checks = document.getElementById("sceneChecks");
+const badge = document.getElementById("chapterBadge");
+
+function formatTime(seconds) {
+  return "00:" + String(seconds).padStart(2, "0");
+}
+
+function renderScene() {
+  const chapterIndex = Math.min(Math.floor(currentSecond / 4), chapters.length - 1);
+  const chapter = chapters[chapterIndex];
+
+  title.textContent = chapter.title;
+  text.textContent = chapter.text;
+  caption.textContent = chapter.caption;
+  badge.textContent = `Chapter ${chapterIndex + 1} / ${chapters.length}`;
+  time.textContent = `${formatTime(currentSecond)} / ${formatTime(duration)}`;
+  progress.style.width = `${(currentSecond / duration) * 100}%`;
+
+  checks.innerHTML = chapter.checks
+    .map(item => `<span>${item}</span>`)
+    .join("");
+}
+
+function playTraining() {
+  if (isPlaying) {
+    isPlaying = false;
+    playButton.textContent = "Play training";
+    clearInterval(timer);
+    return;
+  }
+
+  isPlaying = true;
+  playButton.textContent = "Pause";
+
+  timer = setInterval(() => {
+    currentSecond += 1;
+
+    if (currentSecond > duration) {
+      currentSecond = duration;
+      clearInterval(timer);
+      isPlaying = false;
+      playButton.textContent = "Replay training";
+    }
+
+    renderScene();
+  }, 1000);
+}
+
+function restartTraining() {
+  clearInterval(timer);
+  isPlaying = false;
+  currentSecond = 0;
+  playButton.textContent = "Play training";
+  renderScene();
+}
+
+if (playButton && restartButton) {
+  playButton.addEventListener("click", playTraining);
+  restartButton.addEventListener("click", restartTraining);
+  renderScene();
+}
+</script>
 
 </body>
 </html>

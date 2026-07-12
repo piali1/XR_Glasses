@@ -200,3 +200,144 @@ body {
   white-space: pre-wrap;
   margin: 0;
 }
+
+
+/* Interactive training simulation */
+
+.training-simulation-player {
+  width: 100%;
+}
+
+.simulation-screen {
+  min-height: 520px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.26), transparent 32%),
+    linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.96));
+  border: 1px solid rgba(147, 197, 253, 0.3);
+  padding: 22px;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 18px;
+}
+
+.simulation-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #bfdbfe;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.simulation-stage {
+  display: grid;
+  place-items: center;
+}
+
+.xr-frame {
+  width: min(720px, 100%);
+  min-height: 260px;
+  border-radius: 24px;
+  border: 1px solid rgba(147, 197, 253, 0.38);
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 58, 138, 0.42));
+  padding: 28px;
+  box-shadow: inset 0 0 40px rgba(37, 99, 235, 0.15);
+}
+
+.xr-label {
+  display: inline-flex;
+  width: fit-content;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.35);
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.xr-frame h2 {
+  color: #ffffff;
+  margin: 0 0 12px;
+  font-size: 32px;
+  letter-spacing: -0.04em;
+}
+
+.xr-frame p {
+  color: #dbeafe;
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+.scene-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.scene-checks span {
+  display: inline-flex;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: #bbf7d0;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.simulation-caption {
+  background: rgba(15, 23, 42, 0.74);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 18px;
+  padding: 16px;
+  color: #e2e8f0;
+  line-height: 1.5;
+  font-weight: 800;
+}
+
+.simulation-controls {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.simulation-controls button {
+  border: 0;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 900;
+  border-radius: 999px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.progress-track {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.22);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #34d399);
+  transition: width 0.25s ease;
+}
+
+@media (max-width: 700px) {
+  .simulation-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .xr-frame h2 {
+    font-size: 26px;
+  }
+}
