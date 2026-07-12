@@ -15,8 +15,30 @@
     <h1>Pharmacy Staff Login</h1>
     <p>
       Sign in as pharmacy staff to access role-specific workflow, review,
-      audit and content management functions.
+      audit, release and content management functions.
     </p>
+
+    <div class="login-system-card">
+      <h2>Production-style login features</h2>
+      <div class="role-grid">
+        <div>
+          <strong>Database-backed staff accounts</strong>
+          <span>Users are loaded from the staff_users table.</span>
+        </div>
+        <div>
+          <strong>Hashed passwords</strong>
+          <span>Passwords are verified with Laravel Hash.</span>
+        </div>
+        <div>
+          <strong>Role protection</strong>
+          <span>Protected areas require the correct pharmacy staff role.</span>
+        </div>
+        <div>
+          <strong>Password reset flow</strong>
+          <span>A demo reset flow shows how password recovery would work.</span>
+        </div>
+      </div>
+    </div>
 
     <div class="login-system-card">
       <h2>Role-based access concept</h2>
@@ -60,17 +82,6 @@
         <div class="auth-message error">{{ $errors->first() }}</div>
       @endif
 
-      @if(session('staff'))
-        <div class="signed-in-box">
-          <strong>Currently signed in</strong>
-          <span>{{ session('staff.name') }} · {{ session('staff.role_label') }}</span>
-          <form method="POST" action="/logout">
-            @csrf
-            <button type="submit">Sign out</button>
-          </form>
-        </div>
-      @endif
-
       <h2>Sign in</h2>
 
       <form method="POST" action="/login" class="login-form">
@@ -107,6 +118,7 @@
       </div>
 
       <div class="login-links">
+        <a href="/password/reset">Forgot password?</a>
         <a href="/">Process selection</a>
         <a href="/hub">XR Hub</a>
       </div>

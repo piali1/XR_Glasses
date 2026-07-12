@@ -5,6 +5,7 @@ use App\Models\PharmacistRelease;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProcessApiController;
 use App\Http\Controllers\DemoAuthController;
+use App\Http\Controllers\StaffPasswordResetController;
 
 
 if (! function_exists('require_demo_staff')) {
@@ -28,6 +29,13 @@ if (! function_exists('require_demo_staff')) {
 Route::get('/login', [DemoAuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [DemoAuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [DemoAuthController::class, 'logout'])->name('logout');
+
+Route::get('/password/reset', [StaffPasswordResetController::class, 'requestForm'])->name('password.request');
+Route::post('/password/email', [StaffPasswordResetController::class, 'sendResetLink'])->name('password.email');
+Route::get('/password/reset/{token}', [StaffPasswordResetController::class, 'resetForm'])->name('password.reset');
+Route::post('/password/reset', [StaffPasswordResetController::class, 'updatePassword'])->name('password.update');
+
+
 
 Route::get('/', function () {
     return view('processes.index');

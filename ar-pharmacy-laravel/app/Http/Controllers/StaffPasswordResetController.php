@@ -6,7 +6,6 @@ use App\Models\StaffUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class StaffPasswordResetController extends Controller
@@ -21,10 +20,6 @@ class StaffPasswordResetController extends Controller
         $validated = $request->validate([
             'email' => ['required', 'email'],
         ]);
-
-        if (! Schema::hasTable('staff_users')) {
-            return back()->withErrors(['email' => 'Staff user table is not available.']);
-        }
 
         $user = StaffUser::query()
             ->where('email', $validated['email'])
