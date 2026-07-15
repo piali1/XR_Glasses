@@ -270,10 +270,12 @@
 
   </div>
 
-  <script src="{{ asset('js/workflow.js') }}"></script>
 <script>
 window.AUTHENTICATED_STAFF_ROLE = @json(session('staff.role'));
 window.AUTHENTICATED_STAFF_NAME = @json(session('staff.name'));
 </script>
+<script src="{{ asset('js/vendor/jsQR.js') }}"></script>
+<script src="{{ asset('js/workflow.js') }}"></script>
+<script src="{{ asset('js/safari-qr-fallback.js') }}"></script>
 </body>
 </html>
