@@ -1,0 +1,329 @@
+/* Pharmacy staff authentication and role UI */
+
+.staff-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 22px;
+  background: #ffffff;
+  color: #0f172a;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
+  font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+  z-index: 50;
+}
+
+.staff-brand,
+.staff-current,
+.staff-guest,
+.staff-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.staff-logo {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #0f172a;
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.staff-brand strong,
+.staff-current strong {
+  display: block;
+  font-size: 14px;
+}
+
+.staff-brand small,
+.staff-current small {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.staff-role {
+  display: inline-flex;
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.staff-role.pharmacist {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.staff-role.supervisor {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.staff-role.admin {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.staff-nav a,
+.staff-guest a,
+.staff-logout button {
+  border: 0;
+  text-decoration: none;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 10px 13px;
+  border-radius: 999px;
+  font-weight: 900;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.staff-logout button {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.staff-guest span {
+  color: #64748b;
+  font-weight: 800;
+}
+
+/* Login page */
+
+.login-body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.35), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.26), transparent 34%),
+    #020617;
+  color: #e2e8f0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-shell {
+  max-width: 1180px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 54px 24px;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: 34px;
+}
+
+.login-eyebrow {
+  margin: 0 0 14px;
+  color: #93c5fd;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.login-info h1 {
+  margin: 0 0 18px;
+  font-size: clamp(42px, 7vw, 76px);
+  line-height: 0.94;
+  letter-spacing: -0.07em;
+  color: #ffffff;
+}
+
+.login-info > p {
+  max-width: 640px;
+  color: #cbd5e1;
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.login-system-card,
+.login-card {
+  background: rgba(15, 23, 42, 0.86);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 30px;
+  padding: 26px;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.34);
+}
+
+.login-system-card {
+  margin-top: 28px;
+}
+
+.login-system-card h2,
+.login-card h2 {
+  margin: 0 0 18px;
+  color: #ffffff;
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.role-grid div {
+  padding: 16px;
+  background: rgba(30, 41, 59, 0.78);
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.role-grid strong {
+  display: block;
+  color: #bfdbfe;
+  margin-bottom: 7px;
+}
+
+.role-grid span {
+  display: block;
+  color: #cbd5e1;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.login-note {
+  margin-top: 20px;
+  color: #bfdbfe;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f172a;
+}
+
+.login-form {
+  display: grid;
+  gap: 16px;
+}
+
+.login-form label {
+  display: grid;
+  gap: 8px;
+  font-weight: 900;
+  color: #334155;
+}
+
+.login-form input {
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 14px 16px;
+  font: inherit;
+}
+
+.login-form button,
+.signed-in-box button {
+  border: 0;
+  border-radius: 999px;
+  padding: 14px 18px;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.auth-message {
+  padding: 12px 14px;
+  border-radius: 16px;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+.auth-message.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.auth-message.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.signed-in-box {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 18px;
+}
+
+.signed-in-box span {
+  color: #475569;
+}
+
+.demo-account-list {
+  margin-top: 26px;
+}
+
+.demo-account-list h3 {
+  margin: 0 0 12px;
+}
+
+.demo-account {
+  width: 100%;
+  text-align: left;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 18px;
+  padding: 14px;
+  display: grid;
+  gap: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.demo-account:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.demo-account strong {
+  color: #1d4ed8;
+}
+
+.demo-account span,
+.demo-account small {
+  color: #475569;
+}
+
+.login-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.login-links a {
+  color: #1d4ed8;
+  font-weight: 900;
+}
+
+@media (max-width: 950px) {
+  .login-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .role-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .staff-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .staff-nav {
+    flex-wrap: wrap;
+  }
+}

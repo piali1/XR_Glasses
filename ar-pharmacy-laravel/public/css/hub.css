@@ -1,0 +1,372 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  color: #0f172a;
+}
+
+.hub-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 42px 24px 60px;
+}
+
+.hub-header {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 34px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.12);
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: #2563eb;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+}
+
+.hub-header h1 {
+  margin: 0 0 14px;
+  font-size: 44px;
+  letter-spacing: -0.04em;
+}
+
+.hub-header p {
+  max-width: 880px;
+  color: #475569;
+  line-height: 1.65;
+  font-size: 17px;
+}
+
+.hub-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.hub-actions a {
+  text-decoration: none;
+  background: #2563eb;
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 900;
+  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.22);
+}
+
+.hub-actions a:first-child {
+  background: #e2e8f0;
+  color: #0f172a;
+  box-shadow: none;
+}
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.hub-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 26px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.09);
+  border: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+.hub-card.highlight {
+  grid-column: 1 / -1;
+  border: 1px solid rgba(37, 99, 235, 0.24);
+}
+
+.hub-card.wide {
+  grid-column: 1 / -1;
+}
+
+.card-label {
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 14px;
+}
+
+.hub-card h2 {
+  margin: 0 0 12px;
+  font-size: 25px;
+  letter-spacing: -0.02em;
+}
+
+.hub-card p {
+  color: #475569;
+  line-height: 1.6;
+}
+
+.hub-card ul {
+  padding-left: 20px;
+  color: #334155;
+  line-height: 1.7;
+}
+
+.metadata-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.metadata-grid div {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+}
+
+.metadata-grid strong {
+  display: block;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.metadata-grid span {
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.placeholder-box {
+  border: 2px dashed #93c5fd;
+  background: #eff6ff;
+  color: #1e40af;
+  border-radius: 18px;
+  padding: 20px;
+  font-weight: 900;
+  margin-top: 18px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+
+th {
+  background: #f8fafc;
+  color: #334155;
+}
+
+.architecture-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.architecture-flow div {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 18px;
+  padding: 14px 16px;
+  font-weight: 900;
+}
+
+.architecture-flow span {
+  color: #2563eb;
+  font-weight: 900;
+}
+
+@media (max-width: 800px) {
+  .hub-grid,
+  .metadata-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hub-header h1 {
+    font-size: 34px;
+  }
+}
+
+
+/* Staff role access panel */
+
+.staff-role-access-panel {
+  margin: 28px 0;
+  padding: 28px;
+  border-radius: 28px;
+  background: #ffffff;
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.1);
+  display: grid;
+  gap: 22px;
+}
+
+.role-access-main h2 {
+  margin: 0 0 12px;
+  font-size: 32px;
+  color: #0f172a;
+  letter-spacing: -0.04em;
+}
+
+.role-eyebrow {
+  margin: 0 0 8px;
+  color: #2563eb;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 13px;
+}
+
+.role-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.role-meta span,
+.permission-box li,
+.access-matrix div {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 10px 13px;
+  font-weight: 800;
+  color: #475569;
+}
+
+.role-badge {
+  color: #1d4ed8 !important;
+  background: #dbeafe !important;
+  border-color: #bfdbfe !important;
+}
+
+.role-badge.pharmacist {
+  color: #166534 !important;
+  background: #dcfce7 !important;
+  border-color: #bbf7d0 !important;
+}
+
+.role-badge.supervisor {
+  color: #92400e !important;
+  background: #fef3c7 !important;
+  border-color: #fde68a !important;
+}
+
+.role-badge.admin {
+  color: #991b1b !important;
+  background: #fee2e2 !important;
+  border-color: #fecaca !important;
+}
+
+.permission-box {
+  background: #f8fafc;
+  border-radius: 22px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.permission-box h3 {
+  margin: 0 0 14px;
+  color: #0f172a;
+}
+
+.permission-box ul {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.access-matrix {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.access-matrix div {
+  border-radius: 18px;
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+}
+
+.access-matrix strong {
+  color: #0f172a;
+}
+
+.access-matrix span {
+  font-size: 13px;
+}
+
+.access-matrix .allowed {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.access-matrix .allowed span {
+  color: #166534;
+  font-weight: 900;
+}
+
+.access-matrix .locked {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.access-matrix .locked span {
+  color: #9a3412;
+  font-weight: 900;
+}
+
+.locked-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff7ed;
+  color: #9a3412;
+  border: 1px solid #fed7aa;
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-weight: 900;
+}
+
+.login-cta {
+  display: inline-flex;
+  width: fit-content;
+  text-decoration: none;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 900;
+}
+
+@media (max-width: 850px) {
+  .access-matrix {
+    grid-template-columns: 1fr;
+  }
+}
